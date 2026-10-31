@@ -1,0 +1,512 @@
+@use "../../responsive.scss" as *;
+
+.singlePage {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  .titleRow {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+
+    .page-title {
+      font-size: clamp(22px, 2.6vw, 28px);
+      font-weight: 600;
+      line-height: 1.25;
+    }
+  }
+
+  .linkBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: underline;
+    color: var(--text);
+    cursor: pointer;
+    flex-shrink: 0;
+
+    &:hover {
+      background: var(--surface-2);
+    }
+    &.saved svg {
+      color: var(--accent);
+    }
+  }
+
+  .layoutGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 80px;
+    align-items: start;
+    padding-top: 8px;
+
+    @include md {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+  }
+
+  .main {
+    display: flex;
+    flex-direction: column;
+
+    > section {
+      padding: 32px 0;
+      border-bottom: 1px solid var(--border);
+
+      &:first-child {
+        padding-top: 0;
+      }
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+
+  .summary {
+    h2 {
+      font-size: 22px;
+      font-weight: 600;
+    }
+    .facts {
+      margin-top: 4px;
+      font-size: 16px;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 18px;
+      margin-top: 10px;
+      font-size: 14px;
+      color: var(--muted);
+
+      span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+    }
+  }
+
+  .host {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    img {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .hostName {
+      font-weight: 600;
+      font-size: 16px;
+    }
+    .hostRole {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 14px;
+      font-size: 14px;
+      color: var(--muted);
+
+      svg {
+        vertical-align: -2px;
+      }
+      a {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        color: var(--text);
+        text-decoration: underline;
+      }
+    }
+  }
+
+  // Agency listing: the agency first, then the agent buyers deal with
+  .agencyHost {
+    align-items: flex-start;
+
+    .agencyLogo {
+      flex-shrink: 0;
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+
+      img {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+      }
+      span {
+        display: grid;
+        place-items: center;
+        height: 100%;
+        background: var(--ink);
+        color: #fff;
+        font-size: 22px;
+        font-weight: 700;
+      }
+    }
+    .hostName a {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .verifiedBadge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 600;
+      color: var(--info);
+    }
+    .agentLine {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 10px;
+      margin-top: 10px;
+      font-size: 14px;
+
+      img {
+        width: 24px;
+        height: 24px;
+      }
+      a {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .highlights {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .highlight {
+    display: flex;
+    align-items: flex-start;
+    gap: 22px;
+
+    svg {
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    div {
+      display: flex;
+      flex-direction: column;
+    }
+    .label {
+      font-weight: 600;
+    }
+    .value {
+      font-size: 14px;
+      color: var(--muted);
+    }
+  }
+
+  .block {
+    h2 {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 18px;
+    }
+    .muted {
+      color: var(--muted);
+      margin: -10px 0 18px;
+    }
+  }
+
+  .description {
+    font-size: 16px;
+    line-height: 1.65;
+    overflow-wrap: anywhere;
+
+    p + p {
+      margin-top: 12px;
+    }
+    ul,
+    ol {
+      padding-left: 20px;
+    }
+  }
+
+  .nearbyList {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px 24px;
+
+    @include xs {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .nearbyItem {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 16px;
+
+    small {
+      margin-left: auto;
+      font-size: 13px;
+      color: var(--muted);
+    }
+  }
+
+  // ---------- Sticky booking-style card ----------
+  .sidebar {
+    position: sticky;
+    top: calc(var(--nav-h) + 24px);
+
+    @include md {
+      position: static;
+    }
+  }
+
+  .priceCard {
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    box-shadow: rgba(0, 0, 0, 0.12) 0 6px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+
+    .price {
+      font-size: 22px;
+      font-weight: 600;
+
+      span {
+        font-size: 16px;
+        font-weight: 400;
+      }
+    }
+
+    .priceNote {
+      margin-top: -10px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+  }
+
+  .notice {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+
+    &.success {
+      background: var(--success-soft);
+      color: var(--success);
+    }
+    &.error {
+      background: var(--danger-soft);
+      color: var(--danger);
+    }
+  }
+
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .btn {
+      width: 100%;
+      height: 48px;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+  }
+
+  .ctaBtn {
+    background: var(--brand-gradient, linear-gradient(to right, #e61e4d, #d70466));
+    color: #fff;
+    border: none;
+
+    &:hover:not(:disabled) {
+      filter: brightness(0.94);
+    }
+  }
+
+  .locationBlock {
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+  }
+
+  .mapContainer {
+    height: 420px;
+    border-radius: 12px;
+    overflow: hidden;
+
+    @include sm {
+      height: 300px;
+    }
+  }
+
+  // ---------- Chat drawer ----------
+  .chatDrawer {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 1200;
+    width: min(420px, calc(100vw - 32px));
+    height: min(560px, calc(100vh - var(--nav-h) - 48px));
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: rgba(0, 0, 0, 0.2) 0 8px 28px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    @include sm {
+      right: 16px;
+      bottom: 16px;
+    }
+
+    .drawerClose {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 2;
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border: none;
+      border-radius: 50%;
+      background: var(--surface-2);
+      cursor: pointer;
+    }
+
+    .chat {
+      flex: 1;
+      min-height: 0;
+    }
+  }
+
+  // ---------- Delete confirmation ----------
+  .confirmOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1300;
+    background: rgba(0, 0, 0, 0.45);
+    display: grid;
+    place-items: center;
+    padding: 16px;
+  }
+
+  .confirmBox {
+    width: min(420px, 100%);
+    padding: 24px;
+    border-radius: 12px;
+    background: var(--surface);
+
+    h2 {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    p {
+      margin-top: 8px;
+      color: var(--muted);
+    }
+  }
+
+  .confirmButtons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  .reviewBanner {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px 20px;
+    margin-bottom: 24px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-lg);
+
+    > svg {
+      flex-shrink: 0;
+      margin-top: 1px;
+      color: var(--warning);
+    }
+    &.rejected > svg {
+      color: var(--danger);
+    }
+
+    .reviewText {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      p {
+        color: var(--muted);
+        font-size: 14px;
+      }
+    }
+
+    blockquote {
+      margin-top: 8px;
+      padding: 10px 14px;
+      border-radius: var(--radius);
+      background: var(--surface-2);
+      font-size: 14px;
+    }
+
+    textarea {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px 12px;
+      border: 1px solid #b0b0b0;
+      border-radius: var(--radius);
+      resize: vertical;
+
+      &:focus {
+        outline: none;
+        border-color: var(--text);
+        box-shadow: 0 0 0 1px var(--text);
+      }
+    }
+
+    .reviewButtons {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 640px) {
+      flex-wrap: wrap;
+
+      .reviewButtons {
+        width: 100%;
+        justify-content: flex-end;
+      }
+    }
+  }
+}

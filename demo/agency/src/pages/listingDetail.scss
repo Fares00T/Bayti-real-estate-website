@@ -1,0 +1,237 @@
+.listingPage {
+  .backLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+
+    &:hover {
+      color: var(--text);
+    }
+  }
+
+  .titleLine {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .headActions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .rejectedNote {
+    margin-bottom: 24px;
+    padding: 14px 18px;
+    border-radius: var(--radius-lg);
+    background: var(--danger-soft);
+
+    strong {
+      color: var(--danger);
+      font-size: 14px;
+    }
+    p {
+      margin-top: 4px;
+    }
+  }
+
+  .detailGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 24px;
+    align-items: start;
+
+    @media (max-width: 1100px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .detailMain,
+  .detailSide {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+  }
+
+  .card {
+    padding: 20px 22px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+
+    h2 {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    h3 {
+      margin: 18px 0 4px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    &.danger h2 {
+      color: var(--danger);
+    }
+    &.danger .btn {
+      margin-top: 12px;
+    }
+  }
+
+  .cardHead {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+
+    h2 {
+      margin: 0;
+    }
+  }
+
+  .small {
+    font-size: 13px;
+  }
+
+  .gallery {
+    .hero {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      border-radius: var(--radius-lg);
+      background: var(--surface-2);
+      display: block;
+    }
+
+    .thumbs {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      overflow-x: auto;
+
+      button {
+        flex: 0 0 96px;
+        height: 64px;
+        padding: 0;
+        border: 2px solid transparent;
+        border-radius: var(--radius);
+        overflow: hidden;
+        cursor: pointer;
+        background: none;
+        opacity: 0.7;
+
+        &.active {
+          border-color: var(--text);
+          opacity: 1;
+        }
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+    }
+
+    .noPhotos {
+      padding: 48px;
+      text-align: center;
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--radius-lg);
+      color: var(--danger);
+    }
+  }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px 24px;
+
+    @media (max-width: 700px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    dt {
+      font-size: 13px;
+      color: var(--muted);
+    }
+    dd {
+      font-weight: 600;
+    }
+  }
+
+  .description {
+    white-space: pre-line;
+    max-width: 75ch;
+  }
+
+  .editForm {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 16px;
+
+    > p,
+    .span2 {
+      grid-column: 1 / -1;
+    }
+
+    .field input,
+    .field select {
+      height: 44px;
+    }
+  }
+
+  .formActions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .contact {
+    list-style: none;
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 14px;
+
+    a {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+  }
+
+  .activity {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+  }
+
+  .mapLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    font-size: 14px;
+  }
+}
+
+.detailSkeleton {
+  height: 480px;
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+}

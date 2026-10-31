@@ -1,0 +1,527 @@
+@use "../../responsive.scss" as *;
+
+.navbar {
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+
+  .navbar-container {
+    height: var(--nav-h);
+    max-width: calc(var(--page-max) + 2 * var(--gutter));
+    margin: 0 auto;
+    padding-inline: var(--gutter);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 32px;
+
+    @include sm {
+      height: 64px;
+      gap: 12px;
+    }
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--brand, #e61e4d);
+    justify-self: start;
+
+    span {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      padding-bottom: 2px;
+    }
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    @include md {
+      display: none;
+    }
+  }
+
+  .nav-link {
+    position: relative;
+    padding: 10px 14px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--muted);
+    white-space: nowrap;
+    transition: color 0.15s, background 0.15s;
+
+    &:hover {
+      color: var(--text);
+      background: var(--surface-2);
+    }
+
+    &.active {
+      color: var(--text);
+      font-weight: 600;
+
+      &::after {
+        content: "";
+        position: absolute;
+        inset-inline: 14px;
+        bottom: 2px;
+        height: 2px;
+        border-radius: 2px;
+        background: var(--text);
+      }
+    }
+  }
+
+  .right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    grid-column: 3;
+  }
+
+  .icon-link,
+  .burger {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: none;
+    color: var(--text);
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &:hover {
+      background: var(--surface-2);
+    }
+  }
+
+  .publish {
+    height: 44px;
+    padding: 0 18px;
+    border-radius: 999px;
+    font-size: 15px;
+
+    @include xs {
+      width: 44px;
+      padding: 0;
+
+      span {
+        display: none;
+      }
+    }
+  }
+
+  .burger {
+    display: none;
+
+    @include md {
+      display: grid;
+    }
+
+    .unreadDot {
+      position: absolute;
+      top: 9px;
+      inset-inline-end: 9px;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--brand);
+      border: 2px solid #fff;
+    }
+  }
+
+  .user-menu {
+    position: relative;
+
+    @include md {
+      display: none;
+    }
+  }
+
+  .menu-pill {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 44px;
+    padding: 5px 5px 5px 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--text);
+    cursor: pointer;
+    transition: box-shadow 0.2s;
+
+    &:hover,
+    &.open {
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+    }
+
+    img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+  }
+
+  .dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    inset-inline-end: 0;
+    width: 248px;
+    padding: 8px 0;
+    background: #fff;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.12);
+    z-index: 1100;
+
+    .who {
+      display: flex;
+      flex-direction: column;
+      padding: 8px 16px 12px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
+
+      strong {
+        font-weight: 600;
+      }
+      span {
+        font-size: 13px;
+        color: var(--muted);
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    a,
+    button {
+      display: block;
+      width: 100%;
+      padding: 11px 16px;
+      text-align: start;
+      font-size: 14px;
+      color: var(--text);
+      background: none;
+      border: none;
+      cursor: pointer;
+
+      &:hover {
+        background: var(--surface-2);
+      }
+      &.bold {
+        font-weight: 600;
+      }
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 8px 0;
+    }
+  }
+
+  .menuCount {
+    margin-inline-start: 8px;
+    padding: 0 7px;
+    border-radius: 999px;
+    background: var(--brand);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+  }
+}
+
+// Unread notifications
+.navbar .menu-pill {
+  position: relative;
+
+  .unreadDot {
+    position: absolute;
+    top: 4px;
+    inset-inline-start: 26px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--brand);
+    border: 2px solid #fff;
+  }
+}
+
+// ---------- Mobile / tablet drawer ----------
+.navbar .drawerOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(0, 0, 0, 0.4);
+  animation: drawerFade 0.2s ease-out;
+}
+
+.navbar .drawer {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  width: min(380px, 100%);
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  overflow-y: auto;
+  animation: drawerIn 0.24s cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  .drawerHead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    padding-inline: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .iconBtn {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-inline-end: -10px;
+    border: none;
+    border-radius: 50%;
+    background: none;
+    color: var(--text);
+    cursor: pointer;
+  }
+
+  .drawerLinks,
+  .drawerAccount {
+    display: flex;
+    flex-direction: column;
+    padding: 12px 8px;
+
+    a:not(.btn),
+    button {
+      display: flex;
+      align-items: center;
+      min-height: 52px;
+      padding: 0 12px;
+      border: none;
+      border-radius: var(--radius);
+      background: none;
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--text);
+      text-align: start;
+      cursor: pointer;
+
+      &:active {
+        background: var(--surface-2);
+      }
+    }
+  }
+
+  .drawerLinks a:not(.btn) {
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .drawerAccount {
+    border-top: 1px solid var(--border);
+
+    a:not(.btn),
+    button {
+      font-size: 16px;
+      min-height: 48px;
+    }
+
+    .who {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 12px 12px;
+
+      img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+      div {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+      span {
+        font-size: 13px;
+        color: var(--muted);
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    .authRow {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 4px;
+
+      .btn {
+        justify-content: center;
+        font-size: 16px;
+        font-weight: 600;
+      }
+      .drawerAgency {
+        grid-column: 1 / -1;
+        gap: 8px;
+      }
+      .agencySignIn {
+        grid-column: 1 / -1;
+        padding: 10px 0 2px;
+        text-align: center;
+        font-size: 15px;
+        font-weight: 600;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+      }
+      .btn-dark {
+        color: #fff;
+      }
+    }
+  }
+
+  .drawerCta {
+    margin: auto 20px 20px;
+    color: #fff;
+  }
+}
+
+@keyframes drawerFade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes drawerIn {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+}
+
+// ---------- Account-aware actions ----------
+.navbar {
+  .guestActions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+
+    @include md {
+      display: none;
+    }
+  }
+
+  .textLink {
+    padding: 10px 12px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background 0.15s;
+
+    &:hover {
+      background: var(--surface-2);
+    }
+  }
+  // The way in for agencies: straight to the registration form
+  .listAgency {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 44px;
+    margin-right: 6px;
+    padding: 0 16px;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: border-color 0.15s, background 0.15s;
+
+    &:hover {
+      border-color: var(--text);
+      background: var(--surface-2);
+    }
+  }
+  .register {
+    height: 44px;
+    padding: 0 20px;
+    border-radius: 999px;
+    font-size: 15px;
+  }
+
+  // Listing usage on the Publish button: "2/3"
+  .usageChip {
+    margin-left: 4px;
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.22);
+    font-size: 12px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .publish.full {
+    background: var(--text);
+  }
+  .publish .usageChip {
+    @include xs {
+      display: none;
+    }
+  }
+
+  .menuHint {
+    margin-left: auto;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+  }
+
+  // An agency member who is signed in to their workspace
+  .agencyReturn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    max-width: 280px;
+
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    &:hover {
+      border-color: var(--text);
+    }
+    @include md {
+      display: none;
+    }
+  }
+}
+
+.navbar .drawerLinks a {
+  display: flex;
+  align-items: center;
+}
+
+.navbar .drawerAccount .authRow .agencySignIn {
+  justify-self: center;
+}

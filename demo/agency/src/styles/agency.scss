@@ -1,0 +1,630 @@
+@use "../../../shared/styles/responsive.scss" as *;
+
+// What sets the agency workspace apart from the admin dashboard: the agency's
+// own identity in the sidebar and the brand colour on the scope tag.
+
+.agencyShell .sidebar {
+  .brand {
+    padding-bottom: 16px;
+
+    .scope {
+      background: var(--brand);
+    }
+  }
+}
+
+.agencyCard {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 4px 20px;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+
+  img,
+  .agencyInitial {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: var(--radius);
+    object-fit: cover;
+  }
+  .agencyInitial {
+    display: grid;
+    place-items: center;
+    background: var(--ink);
+    color: #fff;
+    font-weight: 700;
+    font-size: 18px;
+  }
+  div {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  strong {
+    font-size: 14px;
+    line-height: 1.25;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.agencyState {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+
+  &.ok {
+    color: var(--info);
+  }
+  &.bad {
+    color: var(--danger);
+  }
+}
+
+.agencyBanner {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 40px;
+  background: var(--warning-soft);
+  color: var(--text);
+  font-size: 14px;
+
+  svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--warning);
+  }
+  &.bad {
+    background: var(--danger-soft);
+
+    svg {
+      color: var(--danger);
+    }
+  }
+
+  @media (max-width: 960px) {
+    padding: 12px 16px;
+  }
+}
+
+.workspace {
+  .stats.six {
+    grid-template-columns: repeat(6, 1fr);
+
+    @media (max-width: 1200px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    @include sm {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .statLink {
+    color: inherit;
+    transition: border-color 0.15s;
+
+    &:hover {
+      border-bottom-color: var(--text);
+    }
+  }
+
+  .emptyState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 48px 16px;
+    text-align: center;
+    color: var(--muted);
+
+    h3 {
+      font-size: 17px;
+      color: var(--text);
+    }
+    p {
+      max-width: 46ch;
+    }
+    .btn {
+      margin-top: 10px;
+    }
+  }
+
+  // Activity feed (overview and activity page)
+  .feed {
+    list-style: none;
+
+    li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+    .feedIcon {
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--surface-2);
+      color: var(--muted);
+
+      img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+      &.review {
+        background: var(--info-soft);
+        color: var(--info);
+      }
+    }
+    .feedText {
+      flex: 1;
+      min-width: 0;
+      font-size: 14px;
+
+      a {
+        font-weight: 600;
+      }
+    }
+    time {
+      flex-shrink: 0;
+      font-size: 13px;
+      color: var(--subtle);
+    }
+  }
+
+  // Visit requests
+  .inquiryList {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .inquiry {
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr) auto;
+    gap: 16px;
+    align-items: start;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+
+    > img,
+    .noPhoto {
+      width: 72px;
+      height: 72px;
+      border-radius: var(--radius);
+      object-fit: cover;
+      background: var(--surface-2);
+    }
+    h3 {
+      font-size: 15px;
+      font-weight: 600;
+
+      a:hover {
+        text-decoration: underline;
+      }
+    }
+    .meta {
+      margin-top: 4px;
+      font-size: 14px;
+      color: var(--muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 14px;
+
+      span {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+      }
+    }
+    blockquote {
+      margin-top: 8px;
+      padding-left: 10px;
+      border-left: 2px solid var(--border-strong);
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .inquiryActions {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    @include sm {
+      grid-template-columns: 56px minmax(0, 1fr);
+
+      > img,
+      .noPhoto {
+        width: 56px;
+        height: 56px;
+      }
+      .inquiryActions {
+        grid-column: 1 / -1;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+    }
+  }
+
+  .person {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    a {
+      font-weight: 600;
+    }
+  }
+
+  .rowActions {
+    display: inline-flex;
+    gap: 2px;
+    justify-content: flex-end;
+  }
+
+  .stateHelp {
+    margin-top: 6px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .selectInline {
+    height: 32px;
+    padding: 0 8px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    background: #fff;
+    font: inherit;
+    font-size: 13px;
+  }
+
+  .setupLink {
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: var(--radius);
+    background: var(--surface-2);
+    font-size: 13px;
+    word-break: break-all;
+  }
+}
+
+.workspace.listingPage {
+  .callout.danger {
+    background: var(--danger-soft);
+  }
+  .detailSide .facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .card .stats {
+    margin-bottom: 16px;
+  }
+  .stack .btn {
+    justify-content: center;
+  }
+  .dangerText {
+    color: var(--danger);
+  }
+  .agencyLine {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 14px;
+  }
+}
+
+.workspace.backoffice {
+  // The panel sits under the page head; the flex gap already spaces them
+  .panel {
+    padding-top: 8px;
+  }
+
+  // Logo / photo preview next to its upload button
+  .logoRow {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 12px 0 20px;
+
+    img {
+      margin-top: 0;
+      width: 64px;
+      height: 64px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      object-fit: cover;
+    }
+  }
+
+  .inquiryActions .btn {
+    min-width: 116px;
+    justify-content: center;
+  }
+
+  // Unread notifications stand out until opened
+  .feed li.unread {
+    margin: 0 -12px;
+    padding-inline: 12px;
+    border-radius: var(--radius);
+    background: var(--accent-soft);
+    cursor: pointer;
+
+    .feedIcon {
+      background: #fff;
+      color: var(--brand);
+    }
+  }
+
+  .modal-content .stack {
+    gap: 14px;
+  }
+}
+
+// A card's intro line keeps its distance from the fields below it
+.workspace.backoffice .card > p.small + .formGrid {
+  margin-top: 16px;
+}
+
+// ---------- Messages ----------
+.workspace .inbox {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  height: calc(100vh - 220px);
+  min-height: 420px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+
+  .threadList {
+    list-style: none;
+    overflow-y: auto;
+    border-right: 1px solid var(--border);
+
+    button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      background: none;
+      text-align: left;
+      font: inherit;
+      cursor: pointer;
+
+      &:hover {
+        background: var(--surface-2);
+      }
+      &.active {
+        background: var(--primary-soft);
+      }
+    }
+    img {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    time {
+      align-self: flex-start;
+      flex-shrink: 0;
+      font-size: 12px;
+      color: var(--subtle);
+    }
+  }
+
+  .threadText {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+
+    strong {
+      font-size: 14px;
+    }
+    span {
+      font-size: 13px;
+      color: var(--muted);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .thread {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .pickOne {
+    margin: auto;
+  }
+
+  .threadHead {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+
+    img {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .backBtn {
+      display: none;
+    }
+  }
+
+  .bubbles {
+    flex: 1;
+    list-style: none;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+
+    li {
+      max-width: 72%;
+      align-self: flex-start;
+
+      p {
+        padding: 10px 14px;
+        border-radius: 16px 16px 16px 4px;
+        background: var(--surface-2);
+        white-space: pre-line;
+        overflow-wrap: anywhere;
+      }
+      time {
+        display: block;
+        margin-top: 2px;
+        padding-inline: 6px;
+        font-size: 11px;
+        color: var(--subtle);
+      }
+      // a colleague's reply
+      .sender {
+        display: block;
+        margin-bottom: 2px;
+        padding-inline: 6px;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--muted);
+      }
+      &.mine {
+        align-self: flex-end;
+        text-align: right;
+
+        p {
+          border-radius: 16px 16px 4px 16px;
+          background: var(--text);
+          color: #fff;
+          text-align: left;
+        }
+      }
+      &.end {
+        min-height: 1px;
+      }
+    }
+  }
+
+  .composer {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+
+    textarea {
+      flex: 1;
+      resize: none;
+      padding: 10px 12px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      font: inherit;
+    }
+  }
+
+  // Phones: one pane at a time
+  @media (max-width: 760px) {
+    grid-template-columns: 1fr;
+    height: calc(100vh - 180px);
+
+    .thread {
+      display: none;
+    }
+    &.reading {
+      .threadList {
+        display: none;
+      }
+      .thread {
+        display: flex;
+      }
+    }
+    .threadHead .backBtn {
+      display: grid;
+    }
+  }
+}
+
+.workspace .inbox .threadList {
+  .threadMeta {
+    align-self: stretch;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 4px;
+  }
+  .unreadCount {
+    min-width: 20px;
+    padding: 1px 6px;
+    border-radius: 999px;
+    background: var(--brand);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+  }
+  button.unread .threadText span {
+    color: var(--text);
+    font-weight: 600;
+  }
+}
+
+// The listing a conversation is about
+.workspace .inbox {
+  .threadText .threadSubject {
+    font-size: 12px;
+  }
+  .threadWho {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+
+    span {
+      font-size: 12px;
+      color: var(--muted);
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    a {
+      color: inherit;
+      text-decoration: underline;
+    }
+  }
+}
