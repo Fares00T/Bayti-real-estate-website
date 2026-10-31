@@ -21,7 +21,7 @@ const apps = [
 ];
 for (const [app, out] of apps) {
   const dir = `${root}${app}/`;
-  if (!existsSync(dir + "node_modules")) run("npm ci --no-audit --no-fund || npm install --no-audit --no-fund", dir);
+  if (!existsSync(dir + "node_modules")) run("npm install --no-audit --no-fund", dir);
   run(`npx vite build --outDir "${root}${out}" --emptyOutDir`, dir);
 }
 console.log("\nDemo built in demo/dist");
