@@ -1,13 +1,28 @@
 {
-  "installCommand": "npm ci --prefix client --no-audit --no-fund && npm ci --prefix agency --no-audit --no-fund && npm ci --prefix admin --no-audit --no-fund",
+  "installCommand": "npm install --prefix client --no-audit --no-fund && npm install --prefix agency --no-audit --no-fund && npm install --prefix admin --no-audit --no-fund",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": null,
   "rewrites": [
-    { "source": "/agency", "destination": "/agency/index.html" },
-    { "source": "/agency/:path*", "destination": "/agency/index.html" },
-    { "source": "/admin", "destination": "/admin/index.html" },
-    { "source": "/admin/:path*", "destination": "/admin/index.html" },
-    { "source": "/:path*", "destination": "/index.html" }
+    {
+      "source": "/agency",
+      "destination": "/agency/index.html"
+    },
+    {
+      "source": "/agency/:path*",
+      "destination": "/agency/index.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/admin/index.html"
+    },
+    {
+      "source": "/admin/:path*",
+      "destination": "/admin/index.html"
+    },
+    {
+      "source": "/:path*",
+      "destination": "/index.html"
+    }
   ]
 }
