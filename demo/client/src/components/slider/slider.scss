@@ -1,0 +1,174 @@
+@use "../../responsive.scss" as *;
+
+.slider {
+  position: relative;
+
+  &.empty {
+    height: 280px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    background: var(--surface-2);
+    color: var(--muted);
+  }
+
+  .mosaic {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 8px;
+    height: clamp(280px, 40vw, 440px);
+    border-radius: 12px;
+    overflow: hidden;
+
+    .tile {
+      padding: 0;
+      border: none;
+      background: var(--surface-2);
+      cursor: pointer;
+      overflow: hidden;
+      min-height: 0;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: filter 0.2s;
+      }
+      &:hover img {
+        filter: brightness(0.88);
+      }
+    }
+
+    .main {
+      grid-row: 1 / 3;
+    }
+
+    // Fewer photos → fewer columns, so nothing is left blank
+    &.count-1 {
+      grid-template-columns: 1fr;
+    }
+    &.count-2 {
+      grid-template-columns: 2fr 1fr;
+      .tile:not(.main) {
+        grid-row: 1 / 3;
+      }
+    }
+    &.count-3 {
+      grid-template-columns: 2fr 1fr;
+    }
+    &.count-4 {
+      .tile:nth-child(4) {
+        grid-column: 2 / 4;
+      }
+    }
+
+    @include sm {
+      grid-template-columns: 1fr !important;
+      height: 260px;
+
+      .tile:not(.main) {
+        display: none;
+      }
+    }
+  }
+
+  .showAll {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    border: 1px solid var(--text);
+    border-radius: 8px;
+    background: #fff;
+    color: var(--text);
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--surface-2);
+    }
+
+    @include sm {
+      right: 12px;
+      bottom: 12px;
+      font-size: 13px;
+    }
+  }
+
+  .fullSlider {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    background: rgba(0, 0, 0, 0.94);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 64px 24px 32px;
+
+    .imgContainer {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+
+      img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        border-radius: 4px;
+      }
+    }
+
+    .arrow,
+    .close {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+    }
+
+    .close {
+      position: absolute;
+      top: 16px;
+      left: 24px;
+    }
+
+    .counter {
+      position: absolute;
+      top: 26px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #fff;
+      font-size: 14px;
+    }
+
+    @include sm {
+      padding: 64px 8px 24px;
+      gap: 6px;
+
+      .arrow {
+        width: 36px;
+        height: 36px;
+      }
+    }
+  }
+}

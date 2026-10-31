@@ -1,0 +1,386 @@
+.loginPage {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--surface-2);
+}
+
+.loginCard {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 36px 32px 28px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+
+  h1 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .lead {
+    margin-top: -10px;
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  .submit {
+    width: 100%;
+    margin-top: 4px;
+  }
+
+  .note {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+  }
+}
+
+.loginBrand {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--brand);
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+
+  .scope {
+    margin-left: 4px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: var(--brand);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+}
+
+.loginError {
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.loginCard .note a {
+  color: var(--text);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.loginError a {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.loginCard,
+.registerForm {
+  .switchLine {
+    font-size: 14px;
+    color: var(--muted);
+    text-align: center;
+
+    a {
+      color: var(--text);
+      font-weight: 600;
+      text-decoration: underline;
+    }
+  }
+
+  // The other platform's door, kept quiet
+  .otherDoor {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    font-size: 13px;
+    color: var(--muted);
+
+    svg {
+      flex-shrink: 0;
+      color: var(--text);
+    }
+    strong {
+      color: var(--text);
+    }
+    &:hover {
+      border-color: var(--text);
+    }
+  }
+
+  .wrongPlatform {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+
+    h1 {
+      margin: 0;
+    }
+    > p {
+      color: var(--muted);
+    }
+    .countdown {
+      font-size: 13px;
+      color: var(--subtle);
+    }
+    .btn-link {
+      align-self: center;
+      font-size: 14px;
+    }
+  }
+
+  .registerSteps {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+
+    li {
+      display: flex;
+      gap: 12px;
+    }
+    li > span {
+      flex-shrink: 0;
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--text);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    strong {
+      font-size: 15px;
+    }
+    p {
+      font-size: 14px;
+      color: var(--muted);
+    }
+  }
+
+  a.submit {
+    justify-content: center;
+  }
+
+  // New agencies: as visible as signing in
+  .newAgency {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 4px;
+
+    .orLine {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--muted);
+
+      &::before,
+      &::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+      }
+    }
+    .submit {
+      gap: 8px;
+    }
+    p {
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+    }
+  }
+}
+
+// Agency registration: one screen, no scrolling. How it works on the left,
+// the form on the right; stacked and shortened on phones.
+.registerCard {
+  width: 100%;
+  max-width: 920px;
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+
+  @media (max-width: 760px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.registerIntro {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 32px 28px;
+  background: var(--surface-2);
+  border-right: 1px solid var(--border);
+
+  h1 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .lead {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 15px;
+  }
+  .registerSteps {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    li {
+      display: flex;
+      gap: 12px;
+    }
+    li > span {
+      flex-shrink: 0;
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--text);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    strong {
+      font-size: 15px;
+    }
+    p {
+      font-size: 13px;
+      color: var(--muted);
+    }
+  }
+  .stepsShort {
+    display: none;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  @media (max-width: 760px) {
+    gap: 12px;
+    padding: 20px 20px 16px;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+
+    h1 {
+      font-size: 21px;
+    }
+    .lead {
+      font-size: 14px;
+    }
+    .registerSteps {
+      display: none;
+    }
+    .stepsShort {
+      display: block;
+    }
+  }
+}
+
+.registerForm {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+  padding: 32px;
+
+  h2 {
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .registerFields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 16px;
+  }
+  .submit {
+    width: 100%;
+  }
+  .loginError {
+    margin: 0;
+  }
+
+  @media (max-width: 760px) {
+    gap: 12px;
+    padding: 18px 20px 20px;
+
+    .registerFields {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .field input {
+      height: 44px;
+    }
+    .otherDoor {
+      padding: 10px 12px;
+    }
+  }
+}
+
+@media (max-width: 760px) {
+  .loginPage:has(.registerCard) {
+    padding: 12px;
+  }
+}
+
+// Turning a personal account into the agency's account
+.convertForm {
+  h2 {
+    font-size: 18px;
+    line-height: 1.3;
+  }
+  .convertLead {
+    margin-top: -6px;
+    font-size: 14px;
+    color: var(--muted);
+
+    strong {
+      color: var(--text);
+    }
+  }
+  .convertFacts {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px 14px 12px 30px;
+    border-radius: var(--radius-lg);
+    background: var(--surface-2);
+    font-size: 13px;
+  }
+  .switchLine .btn-link {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    text-decoration: underline;
+  }
+}

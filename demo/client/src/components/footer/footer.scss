@@ -1,0 +1,111 @@
+@use "../../responsive.scss" as *;
+
+.siteFooter {
+  margin-top: auto;
+  padding-block: var(--space-8) var(--space-6);
+  background: var(--surface-2);
+  border-top: 1px solid var(--border);
+  font-size: 15px;
+
+  .footTop {
+    display: grid;
+    grid-template-columns: 1.4fr repeat(3, 1fr);
+    gap: var(--space-6);
+
+    @include md {
+      grid-template-columns: repeat(3, 1fr);
+
+      .footBrand {
+        grid-column: 1 / -1;
+      }
+    }
+    @include sm {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .footBrand p {
+    margin-top: var(--space-3);
+    max-width: 34ch;
+    color: var(--muted);
+  }
+
+  .footLogo {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--brand);
+
+    span {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+    }
+  }
+
+  h2 {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: var(--space-3);
+  }
+
+  ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+  }
+
+  li a {
+    display: inline-block;
+    padding-block: 6px;
+    color: var(--muted);
+
+    &:hover {
+      color: var(--text);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+  }
+
+  .footCities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 20px;
+    margin-top: var(--space-7);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--border-strong);
+
+    a {
+      padding-block: 6px;
+      color: var(--muted);
+      font-size: 14px;
+
+      &:hover {
+        color: var(--text);
+      }
+    }
+  }
+
+  .footBottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 24px;
+    margin-top: var(--space-4);
+    font-size: 14px;
+    color: var(--muted);
+
+    a:hover {
+      color: var(--text);
+      text-decoration: underline;
+    }
+
+    .currency {
+      margin-inline-start: auto;
+
+      @include sm {
+        margin-inline-start: 0;
+      }
+    }
+  }
+}

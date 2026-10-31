@@ -1,0 +1,178 @@
+@use "../../responsive.scss" as *;
+
+.sellPage {
+  .lead {
+    font-size: var(--fs-lead);
+    color: var(--muted);
+    max-width: 56ch;
+  }
+
+  .muted {
+    color: var(--muted);
+    margin-top: var(--space-2);
+  }
+
+  h2 {
+    font-size: var(--fs-h2);
+    letter-spacing: -0.025em;
+  }
+
+  .sellHero {
+    padding-block: var(--space-8) var(--space-section);
+
+    h1 {
+      font-size: var(--fs-display);
+      font-weight: 800;
+      line-height: 1.02;
+      letter-spacing: -0.035em;
+      max-width: 17ch;
+      margin-bottom: var(--space-5);
+      text-wrap: balance;
+    }
+  }
+
+  .ctaRow {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-3) var(--space-5);
+    margin-top: var(--space-6);
+
+    .btn-primary {
+      color: #fff;
+    }
+
+    @include xs {
+      .btn {
+        width: 100%;
+      }
+    }
+  }
+
+  .haveAccount {
+    color: var(--muted);
+
+    a {
+      color: var(--text);
+      font-weight: 600;
+      text-decoration: underline;
+    }
+  }
+
+  // Eight steps read left to right, two rows on desktop
+  .formSteps {
+    list-style: none;
+    counter-reset: step;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-6) var(--space-5);
+
+    @include md {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    @include xs {
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+    }
+
+    li {
+      counter-increment: step;
+      padding-top: var(--space-4);
+      border-top: 1px solid var(--border-strong);
+
+      &::before {
+        content: counter(step);
+        display: block;
+        margin-bottom: var(--space-2);
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--brand);
+      }
+
+      strong {
+        font-size: 18px;
+      }
+      p {
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 15px;
+      }
+    }
+  }
+
+  .afterGrid,
+  .tipsGrid {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: var(--space-8);
+
+    @include md {
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+    }
+
+    .lead {
+      margin-top: var(--space-4);
+    }
+  }
+
+  .afterList {
+    display: flex;
+    flex-direction: column;
+
+    > div {
+      padding-block: var(--space-5);
+      border-bottom: 1px solid var(--border-strong);
+
+      &:first-child {
+        padding-top: 0;
+      }
+    }
+    dt {
+      font-weight: 700;
+      font-size: 18px;
+    }
+    dd {
+      margin-top: 4px;
+      color: var(--muted);
+    }
+  }
+
+  .tips {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+
+    li {
+      color: var(--muted);
+      max-width: 60ch;
+    }
+    strong {
+      display: block;
+      color: var(--text);
+      font-size: 18px;
+      margin-bottom: 2px;
+    }
+  }
+
+  .faqWrap {
+    max-width: calc(860px + 2 * var(--gutter));
+
+    h2 {
+      margin-bottom: var(--space-6);
+    }
+  }
+
+  .closingInner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-5);
+
+    .btn-primary {
+      color: #fff;
+    }
+  }
+}

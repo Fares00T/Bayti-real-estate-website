@@ -1,0 +1,124 @@
+.pricePin {
+  background: none;
+  border: none;
+
+  span {
+    display: inline-block;
+    position: relative;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: var(--primary);
+    color: #fff;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    box-shadow: 0 4px 10px rgba(20, 35, 31, 0.25);
+    transform: translate(-50%, calc(-100% - 6px));
+    transition: transform 0.15s;
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -5px;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-bottom: none;
+      border-top-color: var(--primary);
+    }
+
+    &.rent {
+      background: var(--accent);
+      &::after {
+        border-top-color: var(--accent);
+      }
+    }
+  }
+
+  &:hover span {
+    transform: translate(-50%, calc(-100% - 6px)) scale(1.08);
+  }
+}
+
+// Several listings close together: one bubble with the count; click to zoom in
+.pinCluster {
+  background: none;
+  border: none;
+
+  span {
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--text);
+    color: #fff;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 700;
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 4px rgba(34, 34, 34, 0.15), 0 4px 10px rgba(20, 35, 31, 0.25);
+    transition: transform 0.15s;
+  }
+
+  &:hover span {
+    transform: scale(1.08);
+  }
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: var(--radius) !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.leaflet-popup-content {
+  margin: 10px !important;
+}
+
+.popupCont {
+  display: flex;
+  gap: 12px;
+  width: 250px;
+  color: var(--text) !important;
+
+  img {
+    width: 76px;
+    height: 64px;
+    flex-shrink: 0;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+  }
+
+  .textCont {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    font-family: var(--font-sans);
+  }
+
+  .popupTitle {
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .popupMeta {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  b {
+    color: var(--primary);
+    font-size: 13px;
+  }
+
+  &:hover .popupTitle {
+    color: var(--primary);
+  }
+}

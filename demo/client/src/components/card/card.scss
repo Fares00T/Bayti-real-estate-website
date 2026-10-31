@@ -1,0 +1,225 @@
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+
+  .imageContainer {
+    position: relative;
+    display: block;
+    aspect-ratio: 20 / 19;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--surface-2);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .noImage {
+      height: 100%;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+  }
+
+  .tag {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+
+    &.status-pending {
+      color: var(--warning);
+    }
+    &.status-rejected {
+      color: var(--danger);
+    }
+  }
+
+  .heart {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 4px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #fff;
+    line-height: 0;
+    transition: transform 0.15s;
+
+    svg {
+      fill: rgba(0, 0, 0, 0.5);
+      filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2));
+    }
+
+    &:hover {
+      transform: scale(1.08);
+    }
+
+    &.saved svg {
+      fill: var(--brand);
+    }
+  }
+
+  .textContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    font-size: 15px;
+    line-height: 1.35;
+  }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .place {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .kind {
+    flex-shrink: 0;
+    font-size: 14px;
+  }
+
+  .line {
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .price {
+    margin-top: 5px;
+
+    strong {
+      font-weight: 600;
+    }
+    span {
+      color: var(--text);
+    }
+  }
+
+  .deleteBtn {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    background: none;
+    padding: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--danger);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+
+  // Horizontal layout for narrow sidebars
+  &.card--row {
+    flex-direction: row;
+    gap: 16px;
+
+    .imageContainer {
+      flex: 0 0 160px;
+      aspect-ratio: 1;
+    }
+    .textContainer {
+      flex: 1;
+      min-width: 0;
+      justify-content: center;
+    }
+  }
+}
+
+// Agency listings: who lists it, with the badge only when the agency is verified
+.card {
+  .verifiedTag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    svg {
+      color: var(--info);
+    }
+  }
+
+  .byline {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+    font-size: 13px;
+    color: var(--muted);
+    min-width: 0;
+
+    img {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .check {
+      flex-shrink: 0;
+      color: var(--info);
+    }
+  }
+}
+
+// Owner controls in My properties: Archive / Restore / Delete
+.card .cardActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0;
+    border: none;
+    background: none;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+
+    &.danger {
+      color: var(--danger);
+    }
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}

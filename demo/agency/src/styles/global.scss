@@ -1,0 +1,44 @@
+// Same tokens and primitives as the marketplace, tuned denser for daily use
+@use "../../../shared/styles/base.scss";
+
+body {
+  font-size: 15px;
+  background: #fff;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.spin {
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.bootSplash {
+  min-height: 100vh;
+  background: var(--surface-2);
+}
+
+.emptyPage {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 48px 0;
+
+  h1 {
+    font-size: 26px;
+  }
+}
+
+// Tabular numbers everywhere data lines up
+table,
+.stat strong {
+  font-variant-numeric: tabular-nums;
+}
