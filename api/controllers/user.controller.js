@@ -1,86 +1,57 @@
 import prisma from "../lib/prisma.js";
 import bcrypt from "bcrypt";
+import { deleteDocuments } from "../lib/storage.js";
+import { AGENCY_BADGE_SELECT, detachMember, publicAgency } from "../lib/agency.js";
+import { startSession } from "./auth.controller.js";
 
-export const getUsers = async (req, res) => {
-  try {
-    const users = await prisma.user.findMany();
-    res.status(200).json(users);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: "Failed to get users!" });
-  }
-};
-
-export const getUser = async (req, res) => {
-  const id = req.params.id;
-  try {
-    const user = await prisma.user.findUnique({
-      where: { id },
-    });
-    res.status(200).json(user);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: "Failed to get user!" });
-  }
-};
+// Never send password hashes to the client
+export const omitPassword = ({ password, ...rest }) => rest;
 
 export const updateUser = async (req, res) => {
   const id = Number(req.params.id);
   const tokenUserId = req.userId;
 
   try {
-    // Get the logged-in user's role
-    const requestingUser = await prisma.user.findUnique({
-      where: { id: tokenUserId },
-    });
-
-    if (!requestingUser) {
-      return res.status(404).json({ message: "User not found." });
-    }
-
-    const isAdmin = requestingUser.role === "admin";
-
-    // If not admin and not updating their own account, deny access
-    if (!isAdmin && id !== tokenUserId) {
+    // People edit their own account only; roles change in the admin dashboard
+    if (id !== tokenUserId) {
       return res.status(403).json({ message: "Not authorized!" });
     }
 
-    const {
-      password,
-      avatar,
-      agencyName,
-      phone,
-      city,
-      district,
-      website,
-      about,
-      role, // include role
-      ...inputs
-    } = req.body;
+    const { password, avatar } = req.body;
 
-    const updatedPassword = password
-      ? await bcrypt.hash(password, 10)
-      : undefined;
+    if (password && password.length < 6) {
+      return res
+        .status(400)
+        .json({ message: "Password must be at least 6 characters." });
+    }
 
-    const updatedUser = await prisma.user.update({
-      where: { id },
-      data: {
-        ...inputs,
-        ...(updatedPassword && { password: updatedPassword }),
-        ...(avatar && { avatar }),
-        ...(agencyName && { agencyName }),
-        ...(phone && { phone }),
-        ...(city && { city }),
-        ...(district && { district }),
-        ...(website && { website }),
-        ...(about && { about }),
-        ...(isAdmin && role && { role }), // only admins can update role
-      },
-    });
+    // Whitelist editable fields; empty strings clear the optional ones
+    const data = {};
+    for (const key of ["username", "email"]) {
+      if (typeof req.body[key] === "string" && req.body[key].trim()) {
+        data[key] = req.body[key].trim();
+      }
+    }
+    // A person's own contact details. An agency's public profile is edited
+    // from the agency platform (legal changes are reported to Bayti).
+    if (typeof req.body.phone === "string") data.phone = req.body.phone.trim().slice(0, 40) || null;
+    if (password) {
+      data.password = await bcrypt.hash(password, 10);
+      // other sessions end; this one is renewed below
+      data.passwordChangedAt = new Date();
+    }
+    if (avatar) data.avatar = avatar;
 
-    const { password: _, ...rest } = updatedUser;
-    res.status(200).json(rest);
+    const updatedUser = await prisma.user.update({ where: { id }, data });
+    if (password) await startSession(res, updatedUser);
+
+    res.status(200).json(omitPassword(updatedUser));
   } catch (err) {
+    if (err.code === "P2002") {
+      return res
+        .status(409)
+        .json({ message: "That username or email is already taken." });
+    }
     console.error(err);
     res.status(500).json({ message: "Failed to update user!" });
   }
@@ -89,65 +60,21 @@ export const updateUser = async (req, res) => {
 export const deleteUser = async (req, res) => {
   const id = parseInt(req.params.id);
 
+  if (isNaN(id)) return res.status(400).json({ message: "Invalid user ID!" });
+  // Users may delete themselves; admins use the admin API
+  if (id !== req.userId) {
+    return res.status(403).json({ message: "Not authorized!" });
+  }
+
   try {
-    // Step 1: Delete PostDetails linked to user's posts
-    await prisma.postDetail.deleteMany({
-      where: {
-        post: {
-          userId: id,
-        },
-      },
-    });
-
-    // Step 2: Delete SavedPosts where the user is involved
-    await prisma.savedPost.deleteMany({
-      where: {
-        OR: [{ userId: id }, { post: { userId: id } }],
-      },
-    });
-
-    // Step 3: Delete Posts created by the user
-    await prisma.post.deleteMany({
-      where: { userId: id },
-    });
-
-    // Step 4: Find all Chat IDs the user is involved in
-    const chatUsers = await prisma.chatUser.findMany({
-      where: { userId: id },
-      select: { chatId: true },
-    });
-    const chatIds = [...new Set(chatUsers.map((cu) => cu.chatId))];
-    /*
-    // ✅ Step 5: Delete all messages in those chats
-    await prisma.message.deleteMany({
-      where: {
-        chatId: { in: chatIds },
-      },
-    });
-*/
-    // ✅ Step 6: Delete the user's ChatUser links
-    await prisma.chatUser.deleteMany({
-      where: { userId: id },
-    });
-
-    // ✅ Step 7: Delete chats with no users left
-    for (const chatId of chatIds) {
-      const remainingUsers = await prisma.chatUser.count({
-        where: { chatId },
+    // An agency can't be left without its owner by accident
+    const me = await prisma.user.findUnique({ where: { id }, select: { agencyRole: true } });
+    if (me?.agencyRole === "owner") {
+      return res.status(409).json({
+        message: "You own an agency. Contact Bayti support to hand it over before deleting your account.",
       });
-
-      if (remainingUsers === 0) {
-        await prisma.chat.delete({
-          where: { id: chatId },
-        });
-      }
     }
-
-    // ✅ Step 8: Delete the user
-    await prisma.user.delete({
-      where: { id },
-    });
-
+    await deleteUserCascade(id);
     res
       .status(200)
       .json({ message: "User and related data deleted successfully." });
@@ -157,9 +84,54 @@ export const deleteUser = async (req, res) => {
   }
 };
 
+// Removes a user together with their personal listings, saved homes and
+// chats. Agency property is never deleted with a person: their agency
+// listings and inquiries are handed over (or left unassigned) first.
+// Shared by self-deletion here and by the admin API.
+export const deleteUserCascade = async (id) => {
+  // Private files first: the rows that point at them cascade away below
+  await deleteDocuments({ OR: [{ userId: id }, { application: { applicantId: id } }] });
+
+  // An agency outlives its owner's account: it is suspended until Bayti gives
+  // it a new owner; its members and listings stay where they are
+  const owned = await prisma.agency.findUnique({ where: { ownerId: id } });
+  if (owned) {
+    await prisma.agency.update({
+      where: { id: owned.id },
+      data: { ownerId: null, status: "suspended", statusReason: "The owner's account was deleted." },
+    });
+  }
+  await prisma.$transaction((tx) => detachMember(tx, id));
+
+  const personal = { userId: id, agencyId: null };
+  await prisma.postDetail.deleteMany({ where: { post: personal } });
+  await prisma.savedPost.deleteMany({
+    where: { OR: [{ userId: id }, { post: personal }] },
+  });
+  await prisma.post.deleteMany({ where: personal });
+
+  const chatUsers = await prisma.chatUser.findMany({
+    where: { userId: id },
+    select: { chatId: true },
+  });
+  const chatIds = [...new Set(chatUsers.map((cu) => cu.chatId))];
+  await prisma.chatUser.deleteMany({ where: { userId: id } });
+  // Chats left with nobody in them go too
+  for (const chatId of chatIds) {
+    const remaining = await prisma.chatUser.count({ where: { chatId } });
+    if (remaining === 0) await prisma.chat.delete({ where: { id: chatId } });
+  }
+
+  await prisma.user.delete({ where: { id } });
+};
+
 export const savePost = async (req, res) => {
-  const postId = req.body.postId;
+  const postId = parseInt(req.body.postId);
   const tokenUserId = req.userId;
+
+  if (isNaN(postId)) {
+    return res.status(400).json({ message: "Invalid post ID!" });
+  }
 
   try {
     const savedPost = await prisma.savedPost.findUnique({
@@ -191,137 +163,37 @@ export const savePost = async (req, res) => {
     }
   } catch (err) {
     console.error("Error saving post:", err);
-    res
-      .status(500)
-      .json({ message: "Failed to save post!", error: err.message });
+    res.status(500).json({ message: "Failed to save post!" });
   }
 };
 
 export const profilePosts = async (req, res) => {
   const tokenUserId = req.userId;
+  const userSelect = { select: { id: true, username: true, avatar: true, role: true } };
   try {
     const userPosts = await prisma.post.findMany({
-      where: { userId: tokenUserId },
+      // personal listings only; agency listings live on the agency platform
+      where: { userId: tokenUserId, agencyId: null },
+      include: { user: userSelect, agency: { select: AGENCY_BADGE_SELECT } },
+      orderBy: { createdAt: "desc" },
     });
+    // Saved listings that were since unpublished drop out until re-approved
     const saved = await prisma.savedPost.findMany({
-      where: { userId: tokenUserId },
+      where: { userId: tokenUserId, post: { status: "approved" } },
       include: {
-        post: true,
+        post: { include: { user: userSelect, agency: { select: AGENCY_BADGE_SELECT } } },
       },
+      orderBy: { createdAt: "desc" },
     });
 
-    const savedPosts = saved.map((item) => item.post);
-    res.status(200).json({ userPosts, savedPosts });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: "Failed to get profile posts!" });
-  }
-};
-
-export const getNotificationNumber = async (req, res) => {
-  const tokenUserId = req.userId;
-  try {
-    const number = await prisma.chat.count({
-      where: {
-        userIDs: {
-          hasSome: [tokenUserId],
-        },
-        NOT: {
-          seenBy: {
-            hasSome: [tokenUserId],
-          },
-        },
-      },
-    });
-    res.status(200).json(number);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: "Failed to get profile posts!" });
-  }
-};
-
-export const getAgency = async (req, res) => {
-  try {
-    const users = await prisma.user.findMany({
-      where: {
-        role: "agency",
-        agencyName: { not: "" },
-        location: { not: "" },
-        phone: { not: "" },
-        website: { not: "" },
-        about: { not: "" },
-        //avatar: { not: "" },
-      },
-    });
-    res.status(200).json(users);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ message: "Failed to get users!" });
-  }
-};
-
-// Add these functions to your user.controller.js
-
-export const getUserStatistics = async (req, res) => {
-  try {
-    const totalUsers = await prisma.user.count();
-    const totalAgencies = await prisma.user.count({
-      where: { role: "agency" },
-    });
-    const totalClients = await prisma.user.count({
-      where: { role: "client" },
-    });
-
-    const usersByRole = await prisma.user.groupBy({
-      by: ["role"],
-      _count: {
-        role: true,
-      },
-    });
-
-    const usersThisMonth = await prisma.user.count({
-      where: {
-        createdAt: {
-          gte: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
-        },
-      },
-    });
-
+    const savedIds = new Set(saved.map((item) => item.postId));
+    const savedPosts = saved.map((item) => ({ ...item.post, agency: publicAgency(item.post.agency), isSaved: true }));
     res.status(200).json({
-      totalUsers,
-      totalAgencies,
-      totalClients,
-      usersByRole,
-      usersThisMonth,
+      userPosts: userPosts.map((post) => ({ ...post, agency: publicAgency(post.agency), isSaved: savedIds.has(post.id) })),
+      savedPosts,
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to get user statistics" });
-  }
-};
-
-export const bulkDeleteUsers = async (req, res) => {
-  const { userIds } = req.body;
-  const currentUserId = req.userId;
-
-  try {
-    // Prevent admin from deleting themselves
-    if (userIds.includes(currentUserId)) {
-      return res
-        .status(400)
-        .json({ message: "Cannot delete your own account" });
-    }
-
-    await prisma.user.deleteMany({
-      where: {
-        id: { in: userIds },
-        role: { not: "admin" }, // Prevent deleting other admins
-      },
-    });
-
-    res.status(200).json({ message: "Users deleted successfully" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to delete users" });
+    console.log(err);
+    res.status(500).json({ message: "Failed to get profile posts!" });
   }
 };

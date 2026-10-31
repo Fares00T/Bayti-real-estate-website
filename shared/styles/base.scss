@@ -1,0 +1,465 @@
+// Bayti design tokens — every page/component should use these variables.
+:root {
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f7f7f7;
+  --border: #ebebeb;
+  --border-strong: #dddddd;
+
+  --text: #222222;
+  --muted: #6a6a6a;
+  --subtle: #929292;
+
+  // Airbnb-style: near-black for structure and secondary CTAs, coral for the brand
+  --primary: #222222;
+  --primary-hover: #000000;
+  --primary-soft: #f2f2f2;
+  --brand: #e51d53;
+  --brand-gradient: linear-gradient(to right, #e61e4d 0%, #e31c5f 50%, #d70466 100%);
+  --accent: #e51d53;
+  --accent-soft: #fff0f3;
+
+  --success: #008a05;
+  --success-soft: #e8f5e9;
+  --warning: #b4690e;
+  --warning-soft: #fdf3e3;
+  --danger: #c13515;
+  --danger-soft: #fdecea;
+  --info: #0b5fae;
+  --info-soft: #e8f1fb;
+
+  --radius-sm: 8px;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.08);
+  --shadow: 0 2px 4px rgba(0, 0, 0, 0.06), 0 6px 16px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 6px 20px rgba(0, 0, 0, 0.12);
+
+  --font-sans: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --nav-h: 80px;
+
+  // Marketing pages (home, /sell, /agencies). Deep ink is the one dark surface;
+  // it carries the "for professionals" sections, never decoration.
+  --ink: #1d1a1b;
+  --ink-2: #2b2729;
+  --ink-muted: #b9b3b6;
+  --sand: #f6f3ef;
+
+  // Type scale (marketing). Body copy stays 16px.
+  --fs-display: clamp(36px, 5.2vw, 64px);
+  --fs-h2: clamp(26px, 3vw, 40px);
+  --fs-h3: 20px;
+  --fs-lead: clamp(17px, 1.4vw, 19px);
+  --fs-small: 14px;
+
+  // Spacing: 4px base. Sections breathe on --space-section, stacks use the rest.
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-section: clamp(64px, 8vw, 112px);
+
+  --page-max: 1280px;
+  --gutter: clamp(16px, 5vw, 80px);
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: #ffd6e0;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 transparent;
+}
+
+// ---------- Shared primitives ----------
+.display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.page-title {
+  font-weight: 700;
+  font-size: clamp(24px, 2.4vw, 32px);
+  letter-spacing: -0.02em;
+}
+
+.page-subtitle {
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+.surface {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 24px;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+
+  &:active {
+    transform: translateY(1px);
+  }
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+
+  &.btn-sm {
+    height: 36px;
+    padding: 0 14px;
+    font-size: 14px;
+    border-radius: var(--radius-sm);
+  }
+
+  &.btn-lg {
+    height: 56px;
+    padding: 0 28px;
+    font-size: 17px;
+  }
+}
+
+// Light-on-ink variants for the dark marketing bands
+.btn-light {
+  background: #fff;
+  color: var(--ink);
+  &:hover:not(:disabled) {
+    background: var(--sand);
+  }
+}
+
+.btn-outline-light {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #fff;
+  &:hover:not(:disabled) {
+    border-color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+// ---------- Marketing layout primitives ----------
+// .wrap centres content on --page-max; .band is a full-width section.
+.wrap {
+  width: 100%;
+  max-width: calc(var(--page-max) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.band {
+  padding-block: var(--space-section);
+
+  &.band-sand {
+    background: var(--sand);
+  }
+  &.band-ink {
+    background: var(--ink);
+    color: #fff;
+  }
+}
+// Two plain white bands in a row share one gap instead of two
+.band:not(.band-sand):not(.band-ink) + .band:not(.band-sand):not(.band-ink) {
+  padding-top: 0;
+}
+
+.section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-5);
+  margin-bottom: var(--space-6);
+
+  h2 {
+    font-size: var(--fs-h2);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    max-width: 22ch;
+  }
+  p {
+    margin-top: var(--space-2);
+    color: var(--muted);
+    max-width: 56ch;
+  }
+  .band-ink & p {
+    color: var(--ink-muted);
+  }
+  > a {
+    flex-shrink: 0;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+.btn-primary {
+  background: var(--brand-gradient);
+  color: #fff;
+  &:hover:not(:disabled) {
+    filter: brightness(0.95);
+  }
+}
+
+.btn-dark {
+  background: var(--primary);
+  color: #fff;
+  &:hover:not(:disabled) {
+    background: var(--primary-hover);
+  }
+}
+
+.btn-accent {
+  background: var(--brand-gradient);
+  color: #fff;
+  &:hover:not(:disabled) {
+    filter: brightness(0.95);
+  }
+}
+
+.btn-outline {
+  background: var(--surface);
+  border-color: var(--text);
+  color: var(--text);
+  &:hover:not(:disabled) {
+    background: var(--surface-2);
+  }
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  padding: 0;
+  height: auto;
+  color: var(--text);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text);
+  &:hover:not(:disabled) {
+    background: var(--primary-soft);
+    color: var(--primary);
+  }
+}
+
+.btn-danger {
+  background: var(--danger-soft);
+  color: var(--danger);
+  &:hover:not(:disabled) {
+    background: var(--danger);
+    color: #fff;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+}
+
+.input,
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  height: 56px;
+  padding: 0 14px;
+  border: 1px solid #b0b0b0;
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  transition: border-color 0.15s, box-shadow 0.15s;
+
+  &::placeholder {
+    color: var(--subtle);
+  }
+  &:focus {
+    outline: none;
+    border-color: var(--text);
+    box-shadow: 0 0 0 1px var(--text);
+  }
+  &:disabled {
+    background: var(--surface-2);
+    color: var(--subtle);
+    cursor: not-allowed;
+  }
+}
+
+.field textarea {
+  height: auto;
+  min-height: 110px;
+  padding: 12px 14px;
+  resize: vertical;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--primary-soft);
+  color: var(--primary);
+
+  &.badge-accent {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  &.badge-success {
+    background: var(--success-soft);
+    color: var(--success);
+  }
+  &.badge-warning {
+    background: var(--warning-soft);
+    color: var(--warning);
+  }
+  &.badge-danger {
+    background: var(--danger-soft);
+    color: var(--danger);
+  }
+  &.badge-info {
+    background: var(--info-soft);
+    color: var(--info);
+  }
+}
+
+.empty-state {
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--muted);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.error-text {
+  color: var(--danger);
+  font-size: 13px;
+}
+
+// Leaflet popups / controls tuned to the theme
+.leaflet-container {
+  font-family: var(--font-sans);
+
+  // Credits stay, but small enough not to cover a phone-sized map
+  .leaflet-control-attribution {
+    font-size: 10px;
+    line-height: 1.4;
+    padding: 1px 6px;
+    background: rgba(255, 255, 255, 0.75);
+    color: var(--muted);
+
+    a {
+      color: inherit;
+    }
+  }
+}

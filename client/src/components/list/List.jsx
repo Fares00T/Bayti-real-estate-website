@@ -1,20 +1,22 @@
 import "./list.scss";
 import Card from "../card/Card";
 
-function List({ posts = [], onDelete, currentUser }) {
+function List({ posts = [], onDelete, currentUser, emptyText = "No listings yet." }) {
+  if (posts.length === 0) {
+    return <div className="empty-state">{emptyText}</div>;
+  }
+
   return (
     <div className="list">
-      {posts.length > 0 ? (
-        posts.map((item) => (
-          <Card
-            key={item.id}
-            item={item}
-            onDelete={currentUser?.id === item.userId ? onDelete : null} // Check before accessing properties
-          />
-        ))
-      ) : (
-        <p>No posts found.</p>
-      )}
+      {posts.map((item) => (
+        <Card
+          key={item.id}
+          item={item}
+          onDelete={
+            onDelete && currentUser?.id === item.userId ? onDelete : null
+          }
+        />
+      ))}
     </div>
   );
 }

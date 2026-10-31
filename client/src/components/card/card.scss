@@ -1,159 +1,225 @@
-@use "../../responsive.scss" as *;
-
 .card {
+  position: relative;
   display: flex;
-  gap: 1.5rem;
-  padding: 1.5rem;
-  border-radius: 1rem;
-  background-color: #fff;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
-  }
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
 
   .imageContainer {
-    flex: 2;
-    height: 200px;
+    position: relative;
+    display: block;
+    aspect-ratio: 20 / 19;
+    border-radius: var(--radius-lg);
     overflow: hidden;
-    border-radius: 1rem;
-
-    @include md {
-      display: none;
-    }
+    background: var(--surface-2);
 
     img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      border-radius: inherit;
+      display: block;
+    }
+
+    .noImage {
+      height: 100%;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+  }
+
+  .tag {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+
+    &.status-pending {
+      color: var(--warning);
+    }
+    &.status-rejected {
+      color: var(--danger);
+    }
+  }
+
+  .heart {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 4px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #fff;
+    line-height: 0;
+    transition: transform 0.15s;
+
+    svg {
+      fill: rgba(0, 0, 0, 0.5);
+      filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.2));
+    }
+
+    &:hover {
+      transform: scale(1.08);
+    }
+
+    &.saved svg {
+      fill: var(--brand);
     }
   }
 
   .textContainer {
-    flex: 3;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1px;
+    font-size: 15px;
+    line-height: 1.35;
+  }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .place {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .kind {
+    flex-shrink: 0;
+    font-size: 14px;
+  }
+
+  .line {
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .price {
+    margin-top: 5px;
+
+    strong {
+      font-weight: 600;
+    }
+    span {
+      color: var(--text);
+    }
+  }
+
+  .deleteBtn {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    background: none;
+    padding: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--danger);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+
+  // Horizontal layout for narrow sidebars
+  &.card--row {
+    flex-direction: row;
+    gap: 16px;
+
+    .imageContainer {
+      flex: 0 0 160px;
+      aspect-ratio: 1;
+    }
+    .textContainer {
+      flex: 1;
+      min-width: 0;
+      justify-content: center;
+    }
+  }
+}
+
+// Agency listings: who lists it, with the badge only when the agency is verified
+.card {
+  .verifiedTag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    svg {
+      color: var(--info);
+    }
+  }
+
+  .byline {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+    font-size: 13px;
+    color: var(--muted);
+    min-width: 0;
 
     img {
-      width: 1rem;
-      height: 1rem;
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      object-fit: cover;
+      flex-shrink: 0;
     }
-
-    .title {
-      font-size: 1.25rem;
-      font-weight: 600;
-      color: #333;
-      transition: color 0.3s ease, transform 0.3s ease;
-
-      a {
-        text-decoration: none;
-        color: inherit;
-      }
-
-      &:hover {
-        color: #111;
-        transform: scale(1.02);
-      }
-
-      span {
-        font-weight: 400;
-        font-size: 0.9rem;
-        color: #666;
-        margin-left: 0.5rem;
-      }
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
-
-    .address {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.9rem;
-      color: #777;
+    .check {
+      flex-shrink: 0;
+      color: var(--info);
     }
+  }
+}
 
-    .price {
-      font-size: 1.2rem;
-      font-weight: 500;
-      padding: 0.4rem 0.8rem;
-      border-radius: 0.5rem;
-      background-color: rgba(255, 193, 7, 0.2);
-      width: fit-content;
-      color: #b37400;
+// Owner controls in My properties: Archive / Restore / Delete
+.card .cardActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0;
+    border: none;
+    background: none;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+
+    &.danger {
+      color: var(--danger);
     }
-
-    .bottom {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-
-      .features {
-        display: flex;
-        gap: 0.75rem;
-        flex-wrap: wrap;
-        font-size: 0.9rem;
-
-        .feature,
-        .featureagency {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          padding: 0.5rem 0.75rem;
-          border-radius: 0.5rem;
-          background-color: #f8f9fa;
-
-          img {
-            width: 1rem;
-            height: 1rem;
-          }
-        }
-
-        .featureagency {
-          background-color: #28a745;
-          color: #fff;
-          font-weight: 500;
-        }
-      }
-
-      .icons {
-        display: flex;
-        gap: 1rem;
-
-        .icon {
-          padding: 0.4rem 0.6rem;
-          border: 1px solid #ccc;
-          border-radius: 0.5rem;
-          cursor: pointer;
-          transition: background-color 0.3s ease;
-
-          &:hover {
-            background-color: #f1f1f1;
-          }
-        }
-      }
-    }
-
-    .deleteBtn {
-      align-self: flex-start;
-      background-color: #dc3545;
-      color: #fff;
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 0.5rem;
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-
-      &:hover {
-        background-color: #c82333;
-      }
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
   }
 }

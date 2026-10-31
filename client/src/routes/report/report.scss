@@ -1,113 +1,164 @@
-.report-page {
-  background: #f4f6f9;
-  min-height: 100vh;
+@use "../../responsive.scss" as *;
+
+// Shared form styles also used by the agency application page
+.reportPage,
+.agencyFormPage {
+  max-width: 640px;
+  margin: 0 auto;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 3rem;
+  flex-direction: column;
+  gap: 32px;
 
-  .popup {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #d4edda;
-    color: #155724;
-    padding: 16px 24px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    z-index: 9999;
-    font-size: 16px;
-  }
-
-  .report-form {
-    background: #fff;
-    padding: 2rem;
-    border-radius: 1rem;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 700px;
+  .reportForm {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 20px;
+  }
 
-    h2 {
-      margin-bottom: 1rem;
-      color: #333;
+  .fieldRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+
+    @include xs {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .field select {
+    appearance: auto;
+  }
+
+  .typeChoice {
+    border: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+
+    legend {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 8px;
     }
 
     label {
-      font-weight: 600;
-      color: #444;
-    }
-
-    input,
-    select,
-    textarea {
-      padding: 0.75rem 1rem;
-      border: 1px solid #ccc;
-      border-radius: 0.5rem;
-      font-size: 1rem;
-    }
-
-    .filename {
-      font-size: 0.85rem;
-      color: #666;
-    }
-
-    .submit-btn {
-      background: #e63946;
-      color: white;
-      padding: 0.8rem;
-      border: none;
-      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 18px 16px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: border-color 0.15s, box-shadow 0.15s;
 
       &:hover {
-        background: #d62828;
+        border-color: var(--text);
+      }
+      &.active {
+        border-color: var(--text);
+        box-shadow: 0 0 0 1px var(--text);
+        background: var(--surface-2);
+      }
+
+      input {
+        accent-color: var(--text);
       }
     }
   }
 
-  .popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
+  .fileLabel {
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .docs {
+    border: none;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+
+    legend {
+      margin-bottom: 8px;
+    }
+  }
+
+  .fileDrop {
+    position: relative;
+    display: flex;
     align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 56px;
+    padding: 0 16px;
+    border: 1px dashed #b0b0b0;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 15px;
+    color: var(--muted);
 
-    .popup-message {
-      background: #fff;
-      padding: 2rem;
-      border-radius: 1rem;
-      text-align: center;
-      max-width: 400px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    &:hover {
+      border-color: var(--text);
+    }
+    &.has-file {
+      color: var(--text);
+    }
 
-      p {
-        margin-bottom: 1rem;
-        font-size: 1.1rem;
-      }
+    input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+    }
 
-      button {
-        padding: 0.5rem 1rem;
-        border: none;
-        background: #0077b6;
-        color: white;
-        border-radius: 0.5rem;
-        cursor: pointer;
-        font-weight: 600;
+    span:first-of-type {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .btn-link {
+      flex-shrink: 0;
+      font-size: 14px;
+    }
 
-        &:hover {
-          background: #023e8a;
-        }
-      }
+    &:focus-within {
+      border-color: var(--text);
+      box-shadow: 0 0 0 1px var(--text);
+    }
+  }
+
+  .error-text {
+    font-size: 14px;
+  }
+
+  .submit {
+    align-self: flex-start;
+    min-width: 200px;
+
+    @include xs {
+      align-self: stretch;
+    }
+  }
+
+  .reportDone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+    padding: 64px 24px;
+
+    svg {
+      color: var(--success);
+    }
+    h1 {
+      font-size: 26px;
+      font-weight: 700;
+    }
+    p {
+      color: var(--muted);
+      max-width: 440px;
+      margin-bottom: 12px;
     }
   }
 }

@@ -1,186 +1,386 @@
+@use "../../responsive.scss" as *;
+
 .chat {
-  height: 100%;
   display: flex;
-  flex-direction: column;
-  //background-color: #f9fafb;
-  font-family: "Segoe UI", sans-serif;
-  .adminTag {
-    color: #d62828;
-    font-weight: bold;
-    font-size: 0.85em;
-    margin-left: 5px;
+  min-height: 0;
+  background: var(--surface);
+
+  .iconBtn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    color: var(--text);
+
+    &:hover {
+      background: var(--surface-2);
+    }
   }
 
-  .message.disabled {
-    opacity: 0.4;
-    pointer-events: none;
+  // ---------- Inbox ----------
+  &.chat--inbox {
+    height: 600px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+
+    @include sm {
+      height: 70vh;
+    }
   }
 
-  .messages {
+  .inboxList {
+    flex: 0 0 340px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border);
+    min-height: 0;
+
+    h2 {
+      font-size: 20px;
+      font-weight: 700;
+      padding: 20px 20px 12px;
+    }
+
+    ul {
+      list-style: none;
+      overflow-y: auto;
+      padding: 0 8px 8px;
+    }
+
+    @include md {
+      flex-basis: 280px;
+    }
+    @include sm {
+      flex: 1;
+      border-right: none;
+    }
+  }
+
+  .conversation {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border: none;
+    border-radius: var(--radius-lg);
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+    color: var(--text);
+
+    &:hover:not(:disabled) {
+      background: var(--surface-2);
+    }
+    &.active {
+      background: var(--surface-2);
+    }
+    &:disabled {
+      opacity: 0.55;
+      cursor: default;
+    }
+
+    img {
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .meta {
+      min-width: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .nameRow {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 15px;
+
+      strong {
+        font-weight: 600;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      time {
+        flex-shrink: 0;
+        font-size: 12px;
+        color: var(--muted);
+      }
+    }
+
+    .preview {
+      font-size: 14px;
+      color: var(--muted);
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    // the listing a conversation is about
+    .subject {
+      font-size: 12px;
+      color: var(--muted);
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    &.unread .preview {
+      color: var(--text);
+      font-weight: 600;
+    }
+  }
+
+  .inboxEmpty,
+  .threadPlaceholder {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    padding: 16px;
-    overflow-y: auto;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 32px 24px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
 
-    h1 {
-      font-weight: 500;
-      font-size: 20px;
-      margin-bottom: 10px;
-      color: #333;
+    strong {
+      color: var(--text);
+      font-size: 16px;
+    }
+  }
+
+  .threadPlaceholder {
+    @include sm {
+      display: none;
+    }
+  }
+
+  &.chat--inbox .thread {
+    flex: 1;
+  }
+
+  // On phones show either the list or the thread
+  @include sm {
+    &.has-thread .inboxList {
+      display: none;
+    }
+  }
+
+  // ---------- Thread ----------
+  .thread {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .threadTop {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+
+    img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .who {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.25;
+
+      strong {
+        font-size: 16px;
+        font-weight: 600;
+      }
+      span {
+        font-size: 13px;
+        color: var(--muted);
+      }
     }
 
-    .message {
-      background: #fff;
-      padding: 14px 16px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      transition: all 0.2s ease-in-out;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-
-      &:hover {
-        background-color: #f1f1f1;
+    .back {
+      display: none;
+      @include sm {
+        display: grid;
       }
-
-      img {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        object-fit: cover;
-      }
-
-      span {
-        font-weight: 600;
-        font-size: 16px;
-        color: #222;
-      }
-
-      p {
-        font-size: 14px;
-        color: #666;
-        margin-left: auto;
+    }
+    .close {
+      @include sm {
+        display: none;
       }
     }
   }
 
-  .chatBox {
-    height: 100%;
-    background-color: #fff;
+  .threadBody {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+    gap: 14px;
+  }
 
-    .top {
-      background-color: #ffe5a1;
-      padding: 16px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+  .threadEmpty {
+    margin: auto;
+    max-width: 300px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+    padding: 24px;
+  }
 
-      .user {
-        display: flex;
-        align-items: center;
-        gap: 12px;
+  .bubbleRow {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    max-width: 75%;
 
-        img {
-          width: 36px;
-          height: 36px;
-          border-radius: 50%;
-          object-fit: cover;
-        }
-
-        span {
-          font-weight: 600;
-          color: #222;
-        }
-      }
-
-      .close {
-        cursor: pointer;
-        font-size: 20px;
-        padding: 4px 8px;
-        border-radius: 6px;
-
-        &:hover {
-          background-color: #ffd267;
-        }
-      }
+    .bubble {
+      padding: 10px 14px;
+      border-radius: 18px 18px 18px 4px;
+      background: var(--surface-2);
+      font-size: 15px;
+      line-height: 1.4;
+      white-space: pre-wrap;
+      word-break: break-word;
     }
 
-    .center {
+    .time,
+    .sender {
+      font-size: 12px;
+      color: var(--muted);
+      padding: 0 4px;
+    }
+
+    .sender {
+      font-weight: 600;
+    }
+
+    &.own {
+      align-self: flex-end;
+      align-items: flex-end;
+
+      .bubble {
+        background: var(--text);
+        color: #fff;
+        border-radius: 18px 18px 4px 18px;
+      }
+    }
+  }
+
+  .chatError {
+    padding: 0 20px 8px;
+  }
+
+  .composer {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    margin: 0 16px 16px;
+    padding: 8px 8px 8px 16px;
+    border: 1px solid #b0b0b0;
+    border-radius: 24px;
+
+    &:focus-within {
+      border-color: var(--text);
+    }
+
+    textarea {
       flex: 1;
-      overflow-y: auto;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      background-color: #fefefe;
+      border: none;
+      resize: none;
+      max-height: 120px;
+      padding: 6px 0;
+      font-size: 15px;
+      line-height: 1.4;
+      background: transparent;
+      color: var(--text);
 
-      .chatMessage {
-        max-width: 70%;
-        padding: 12px 16px;
-        border-radius: 12px;
-        background-color: #f1f1f1;
-        color: #333;
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-
-        &.own {
-          background-color: #d1eaff;
-          align-self: flex-end;
-          text-align: right;
-        }
-
-        span {
-          display: block;
-          font-size: 11px;
-          color: #888;
-          margin-top: 4px;
-        }
+      &:focus {
+        outline: none;
       }
     }
 
-    .bottom {
-      display: flex;
-      border-top: 1px solid #f0f0f0;
-      padding: 12px;
-      background-color: #fafafa;
+    .send {
+      flex-shrink: 0;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: none;
+      display: grid;
+      place-items: center;
+      background: var(--brand-gradient);
+      color: #fff;
+      cursor: pointer;
 
-      textarea {
-        flex: 1;
-        resize: none;
-        border: none;
-        border-radius: 10px;
-        padding: 12px;
-        font-size: 14px;
-        background-color: #fff;
-        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
-
-        &:focus {
-          outline: none;
-        }
-      }
-
-      button {
-        margin-left: 10px;
-        padding: 0 20px;
-        border: none;
-        border-radius: 10px;
-        background-color: #f7c14b;
-        color: white;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background-color 0.2s ease-in-out;
-
-        &:hover {
-          background-color: #eab308;
-        }
+      &:disabled {
+        background: var(--border-strong);
+        cursor: not-allowed;
       }
     }
+  }
+
+  .composerDisabled {
+    margin: 0 16px 16px;
+    padding: 12px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--muted);
+    background: var(--surface-2);
+    border-radius: var(--radius);
+  }
+
+  // Thread-only mode fills its container (e.g. the listing chat drawer)
+  &.chat--thread {
+    height: 100%;
+    flex-direction: column;
+
+    .thread {
+      flex: 1;
+    }
+  }
+}
+
+// Unread state comes from the server, so it survives reloads and devices
+.chat .conversation {
+  .previewRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+
+    .preview {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+  .unreadCount {
+    flex-shrink: 0;
+    min-width: 20px;
+    padding: 1px 6px;
+    border-radius: 999px;
+    background: var(--brand);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
   }
 }

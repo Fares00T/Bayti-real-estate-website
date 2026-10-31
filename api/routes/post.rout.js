@@ -7,16 +7,22 @@ import {
   getPost,
   getPosts,
   updatePost,
-  incrementPostView,
+  recordView,
+  setPostArchived,
+  getListingUsage,
+  setPostAvailability,
 } from "../controllers/post.controller.js";
 
 const router = express.Router();
 
 router.get("/", getPosts);
+router.get("/usage", verifyToken, getListingUsage);
+router.post("/:id/view", recordView);
 router.get("/:id", getPost);
 router.post("/", verifyToken, addPost);
 router.put("/:id", verifyToken, updatePost);
+router.put("/:id/archive", verifyToken, setPostArchived);
+router.put("/:id/availability", verifyToken, setPostAvailability);
 router.delete("/:id", verifyToken, deletePost);
-//router.put(":id", incrementPostView);
 
 export default router;

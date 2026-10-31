@@ -1,332 +1,269 @@
-import Chat from "../../components/chat/Chat";
-import List from "../../components/list/List";
-import "./profile.scss";
-import apiRequest from "../../components/lib/apiRequest";
-import { Await, Link, useLoaderData, useNavigate } from "react-router-dom";
-import { Suspense, useContext } from "react";
-import { AuthContext } from "../../context/AuthContext";
-//import DatePicker from "react-datepicker";
-import React, { useState } from "react";
-//import "react-datepicker/dist/react-datepicker.css";
-import { Container, Typography, Grid, Paper, Box } from "@mui/material";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { format } from "date-fns";
-import { Alert } from "@mui/material";
-import UserTourRequests from "../../components/userTourRequests/UserTourRequests";
+import { Suspense, useContext, useState } from "react";
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  LineChart,
-  Line,
-} from "recharts";
+  Await,
+  Link,
+  useLoaderData,
+  useNavigate,
+  useRevalidator,
+  useSearchParams,
+} from "react-router-dom";
+import { Archive, ArchiveRestore, Check, Plus, Trash2 } from "lucide-react";
+import Chat from "../../components/chat/Chat";
+import Card from "../../components/card/Card";
+import List from "../../components/list/List";
+import UserInquiries from "../../components/userTourRequests/UserTourRequests";
+import AgencyInvitations from "../../components/agencyInvitations/AgencyInvitations";
+import apiRequest from "../../components/lib/apiRequest";
+import { AuthContext } from "../../context/AuthContext";
+import "./profile.scss";
+import { atLimit, listingsChanged, useListingUsage } from "../../components/lib/listingUsage";
+import { LimitReached, UsageMeter } from "../../components/listingLimit/ListingLimit";
 
-import { Gauge, gaugeClasses } from "@mui/x-charts/Gauge";
-import axios from "axios";
+
+
+const Loading = () => <div className="skeleton" aria-label="Loading" />;
+const LoadError = ({ what }) => (
+  <div className="empty-state">Couldn&rsquo;t load {what}. Refresh to try again.</div>
+);
 
 function Profile() {
   const data = useLoaderData();
-  const [selectedDate, setSelectedDate] = useState(null);
-
-  const formatDate = (date) => format(date, "yyyy-MM-dd"); // Ensure the format stays consistent with local timezone
-
-  const { updateUser, currentUser } = useContext(AuthContext);
-
-  console.log("Current User:", currentUser.role); // Check user role
-
   const navigate = useNavigate();
+  const revalidator = useRevalidator();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { updateUser, currentUser } = useContext(AuthContext);
+  const [pendingDelete, setPendingDelete] = useState(null);
+  const [notice, setNotice] = useState("");
+  const [busy, setBusy] = useState(null);
+  const usage = useListingUsage();
 
-  const handleDelete = async (postId) => {
+  if (!currentUser) return null;
+
+  const tabs = [
+    { id: "listings", label: "My properties" },
+    { id: "saved", label: "Favorites" },
+    { id: "messages", label: "Messages" },
+    { id: "inquiries", label: "Inquiries" },
+  ];
+  // older links used ?tab=tours
+  const requested = searchParams.get("tab") === "tours" ? "inquiries" : searchParams.get("tab");
+  const tab = tabs.some((t) => t.id === requested) ? requested : "listings";
+
+  const handleDelete = async () => {
+    const id = pendingDelete;
+    setPendingDelete(null);
     try {
-      await apiRequest.delete(`/posts/${postId}`);
-      navigate(0); // Refresh page
+      await apiRequest.delete(`/posts/${id}`);
+      revalidator.revalidate();
+      listingsChanged();
+      setNotice("Listing deleted.");
     } catch (err) {
-      console.log(err);
+      setNotice(err.response?.data?.message || "Couldn't delete the listing.");
     }
   };
+
+  // Archiving frees a slot; restoring takes one back (the server checks)
+  const setArchived = async (post, archived) => {
+    setBusy(post.id);
+    try {
+      await apiRequest.put(`/posts/${post.id}/archive`, { archived });
+      revalidator.revalidate();
+      listingsChanged();
+      setNotice(archived ? "Listing archived. It no longer counts toward your limit." : "Listing restored and sent for review.");
+    } catch (err) {
+      setNotice(err.response?.data?.message || "Couldn't update the listing.");
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const listingActions = (p) => (
+    <>
+      {["pending", "approved", "rejected"].includes(p.status) && (
+        <button type="button" disabled={busy === p.id} onClick={() => setArchived(p, true)}>
+          <Archive size={14} /> Archive
+        </button>
+      )}
+      {p.status === "archived" && (
+        <button type="button" disabled={busy === p.id} onClick={() => setArchived(p, false)}>
+          <ArchiveRestore size={14} /> Restore
+        </button>
+      )}
+      <button type="button" className="danger" onClick={() => setPendingDelete(p.id)}>
+        <Trash2 size={14} /> Delete
+      </button>
+    </>
+  );
 
   const handleLogout = async () => {
     try {
       await apiRequest.post("/auth/logout");
-      updateUser(null);
-      navigate("/");
     } catch (err) {
       console.log(err);
+    } finally {
+      // clear the local session even if the server call failed
+      updateUser(null);
+      navigate("/");
     }
   };
 
   return (
     <div className="profilePage">
-      <div className="details">
-        <div className="wrapper">
-          <div className="title">
-            <h1>User Information</h1>
-            <Link to="/profile/update">
-              <button>Update Profile</button>
-            </Link>
+      <aside className="profileAside">
+        <div className="idCard">
+          <div className="idMain">
+            <img src={currentUser.avatar || "/noavatar.jpg"} alt="" />
+            <h2>{currentUser.username}</h2>
+            <span>Member</span>
           </div>
-          <div className="info">
-            <span>
-              Avatar:
-              <img src={currentUser.avatar || "noavatar.jpg"} alt="" />
-            </span>
-            <span>
-              Username: <b>{currentUser.username}</b>
-            </span>
-            <span>
-              E-mail: <b>{currentUser.email}</b>
-            </span>
-            {currentUser.role === "agency" && (
-              <>
-                <span>
-                  Agency Name: <b>{currentUser.agencyName || "N/A"}</b>
-                </span>
-                <span>
-                  Location: <b>{currentUser.location || "N/A"}</b>
-                </span>
-                <span>
-                  Phone Number: <b>{currentUser.phone || "N/A"}</b>
-                </span>
-                <span>
-                  Website: <b>{currentUser.website || "N/A"}</b>
-                </span>
-                {/* Check for missing fields */}
-                {(!currentUser.agencyName ||
-                  !currentUser.location ||
-                  !currentUser.phone) && (
-                  <Alert severity="warning" sx={{ mb: 2 }}>
-                    Please complete all your agency details to appear on the
-                    agencies page.
-                  </Alert>
-                )}
-              </>
+        </div>
+
+        <div className="confirmed">
+          <h3>{currentUser.username}&rsquo;s confirmed information</h3>
+          <ul>
+            <li>
+              <Check size={18} /> Email address
+            </li>
+            {currentUser.phone && (
+              <li>
+                <Check size={18} /> Phone number
+              </li>
             )}
-            <button onClick={handleLogout}>Logout</button>
+          </ul>
+        </div>
+
+        <div className="asideActions">
+          <Link to="/profile/update" className="btn btn-outline">
+            Edit profile
+          </Link>
+          <button className="btn-link" onClick={handleLogout}>
+            Log out
+          </button>
+        </div>
+      </aside>
+
+      <div className="profileMain">
+        <header className="profileHeader">
+          <div>
+            <h1 className="page-title">Hi, I&rsquo;m {currentUser.username}</h1>
+            <p className="page-subtitle">{currentUser.email}</p>
           </div>
-          {currentUser?.role === "agency" && (
-            <Link to="/agency-dashboard">
-              <button className="btn btn-dashboard">
-                📊 Tour Requests Dashboard
-              </button>
-            </Link>
-          )}
-          {currentUser?.role === "client" && (
-            <>
-              <div className="title">
-                <h1>Tour Requests</h1>
-              </div>
-              <UserTourRequests currentUser={currentUser} />
-            </>
-          )}
-          {currentUser?.role !== "admin" ? (
-            <>
-              <div className="title">
-                <h1>My List</h1>
-                <Link to="/add">
-                  <button>Create New Post</button>
-                </Link>
-              </div>
-              <Suspense fallback={<p>Loading...</p>}>
-                <Await
-                  resolve={data.postResponse}
-                  errorElement={<p>Error loading posts!</p>}
-                >
-                  {(postResponse) => (
-                    <List
-                      posts={postResponse?.data?.userPosts || []}
-                      onDelete={handleDelete}
-                      currentUser={currentUser}
-                    />
-                  )}
-                </Await>
-              </Suspense>
-              <div className="title">
-                <h1>Saved List</h1>
-              </div>
-              <Suspense fallback={<p>Loading...</p>}>
-                <Await
-                  resolve={data.postResponse}
-                  errorElement={<p>Error loading posts!</p>}
-                >
-                  {(postResponse) => (
-                    <List
-                      posts={postResponse.data.savedPosts}
-                      onDelete={handleDelete}
-                    />
-                  )}
-                </Await>
-              </Suspense>
-            </>
-          ) : (
-            <>
-              <Box sx={{ mb: 4 }}>
-                <Typography variant="h4" gutterBottom>
-                  Statistics
-                </Typography>
-              </Box>
+        </header>
 
-              <Suspense
-                fallback={<Typography>Loading admin data...</Typography>}
-              >
-                <Await
-                  resolve={data.statResponse}
-                  errorElement={
-                    <Typography color="error">
-                      Error loading admin data!
-                    </Typography>
-                  }
-                >
-                  {(statResponse) => {
-                    const usersByDay = statResponse?.data?.usersByDay || [];
-                    const postsByDay = statResponse?.data?.postsByDay || [];
+        {notice && (
+          <div className="notice" role="status">
+            {notice}
+            <button className="btn-link" onClick={() => setNotice("")}>
+              Dismiss
+            </button>
+          </div>
+        )}
 
-                    const selectedDateStr = selectedDate
-                      ? formatDate(selectedDate)
-                      : null;
+        <AgencyInvitations />
 
-                    const usersOnDate = usersByDay.find(
-                      (u) => u.date === selectedDateStr
-                    );
-                    const postsOnDate = postsByDay.find(
-                      (p) => p.date === selectedDateStr
-                    );
-
-                    // ✅ Here is the new merged logic:
-                    const allDates = Array.from(
-                      new Set([
-                        ...usersByDay.map((u) => u.date),
-                        ...postsByDay.map((p) => p.date),
-                      ])
-                    ).sort();
-
-                    const chartData = allDates.map((date) => {
-                      const userEntry = usersByDay.find((u) => u.date === date);
-                      const postEntry = postsByDay.find((p) => p.date === date);
-
-                      return {
-                        date,
-                        users: userEntry?.count || 0,
-                        posts: postEntry?.count || 0,
-                      };
-                    });
-
-                    console.log("Chart Data:", chartData);
-                    return (
-                      <Box>
-                        {selectedDate && (
-                          <Paper elevation={2} sx={{ p: 3, mb: 3 }}>
-                            <Typography variant="subtitle1" gutterBottom>
-                              <b>{formatDate(selectedDate)}</b>
-                            </Typography>
-                            <Typography variant="body1">
-                              Users registered: <b>{usersOnDate?.count || 0}</b>
-                            </Typography>
-                            <Typography variant="body1">
-                              Posts created: <b>{postsOnDate?.count || 0}</b>
-                            </Typography>
-                          </Paper>
-                        )}
-
-                        <Paper elevation={2} sx={{ p: 3 }}>
-                          <Typography variant="h6" gutterBottom>
-                            Daily Activity Chart
-                          </Typography>
-                          <ResponsiveContainer width="100%" height={300}>
-                            <BarChart
-                              data={chartData}
-                              margin={{
-                                top: 20,
-                                right: 30,
-                                left: 0,
-                                bottom: 5,
-                              }}
-                            >
-                              <CartesianGrid strokeDasharray="3 3" />
-                              <XAxis dataKey="date" />
-                              <YAxis allowDecimals={false} />
-                              <Tooltip />
-                              <Legend />
-                              <Bar
-                                dataKey="users"
-                                fill="#1976d2"
-                                name="Users Registered"
-                              />
-                              <Bar
-                                dataKey="posts"
-                                fill="#f57c00"
-                                name="Posts Created"
-                              />
-                            </BarChart>
-                          </ResponsiveContainer>
-                        </Paper>
-                        <Paper elevation={2} sx={{ p: 3 }}>
-                          <Typography variant="h6" gutterBottom>
-                            Daily Activity Chart
-                          </Typography>
-                          <ResponsiveContainer width="100%" height={300}>
-                            <LineChart
-                              data={chartData}
-                              margin={{
-                                top: 20,
-                                right: 30,
-                                left: 0,
-                                bottom: 5,
-                              }}
-                            >
-                              <CartesianGrid strokeDasharray="3 3" />
-                              <XAxis dataKey="date" />
-                              <YAxis allowDecimals={false} />
-                              <Tooltip />
-                              <Legend />
-                              <Line
-                                type="monotone"
-                                dataKey="users"
-                                stroke="#1976d2"
-                                name="Users Registered"
-                                strokeWidth={2}
-                                dot={{ r: 3 }}
-                              />
-                              <Line
-                                type="monotone"
-                                dataKey="posts"
-                                stroke="#f57c00"
-                                name="Posts Created"
-                                strokeWidth={2}
-                                dot={{ r: 3 }}
-                              />
-                            </LineChart>
-                          </ResponsiveContainer>
-                        </Paper>
-                      </Box>
-                    );
-                  }}
-                </Await>
-              </Suspense>
-            </>
-          )}
-        </div>
-
-        <div></div>
-      </div>
-      <div className="chatContainer">
-        <div className="wrapper">
-          <Suspense fallback={<p>Loading...</p>}>
-            <Await
-              resolve={data.chatResponse}
-              errorElement={<p>Error loading chats!</p>}
+        <nav className="tabs" aria-label="Profile sections">
+          {tabs.map((t) => (
+            <button
+              key={t.id}
+              className={tab === t.id ? "active" : ""}
+              aria-current={tab === t.id ? "page" : undefined}
+              onClick={() => setSearchParams({ tab: t.id }, { replace: true })}
             >
-              {(chatResponse) => <Chat chats={chatResponse.data} />}
-            </Await>
-          </Suspense>
-        </div>
+              {t.label}
+            </button>
+          ))}
+        </nav>
+
+        {tab === "listings" && (
+          <section className="tabPanel">
+            <div className="panelHead">
+              <div>
+                <h2>My properties</h2>
+                <UsageMeter usage={usage} />
+              </div>
+              {!atLimit(usage) && (
+                <Link to="/add" className="btn btn-dark btn-sm">
+                  <Plus size={16} /> Publish property
+                </Link>
+              )}
+            </div>
+            {atLimit(usage) && <LimitReached usage={usage} compact />}
+            <Suspense fallback={<Loading />}>
+              <Await resolve={data.postResponse} errorElement={<LoadError what="your properties" />}>
+                {(postResponse) => {
+                  const posts = postResponse?.data?.userPosts || [];
+                  return posts.length === 0 ? (
+                    <div className="empty-state">You haven't published any properties yet.</div>
+                  ) : (
+                    <div className="list">
+                      {posts.map((p) => (
+                        <Card key={p.id} item={p} actions={listingActions(p)} />
+                      ))}
+                    </div>
+                  );
+                }}
+              </Await>
+            </Suspense>
+          </section>
+        )}
+
+        {tab === "saved" && (
+          <section className="tabPanel">
+            <div className="panelHead">
+              <h2>Favorites</h2>
+            </div>
+            <Suspense fallback={<Loading />}>
+              <Await resolve={data.postResponse} errorElement={<LoadError what="saved listings" />}>
+                {(postResponse) => (
+                  <List
+                    posts={postResponse?.data?.savedPosts || []}
+                    emptyText="Tap the heart on any listing to save it here."
+                  />
+                )}
+              </Await>
+            </Suspense>
+          </section>
+        )}
+
+        {tab === "messages" && (
+          <section className="tabPanel">
+            <Suspense fallback={<Loading />}>
+              <Await resolve={data.chatResponse} errorElement={<LoadError what="your messages" />}>
+                {(chatResponse) => <Chat chats={chatResponse.data} />}
+              </Await>
+            </Suspense>
+          </section>
+        )}
+
+        {tab === "inquiries" && (
+          <section className="tabPanel">
+            <UserInquiries />
+          </section>
+        )}
+
       </div>
+
+      {pendingDelete && (
+        <div className="confirmOverlay" onClick={() => setPendingDelete(null)}>
+          <div
+            className="confirmBox"
+            role="dialog"
+            aria-modal="true"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2>Delete this listing?</h2>
+            <p>This permanently removes the listing. This can&rsquo;t be undone.</p>
+            <div className="confirmButtons">
+              <button className="btn-link" onClick={() => setPendingDelete(null)}>
+                Cancel
+              </button>
+              <button className="btn btn-dark" onClick={handleDelete}>
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

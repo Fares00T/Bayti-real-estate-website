@@ -1,156 +1,191 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import "./Report.scss";
+import { useContext, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import { CheckCircle2 } from "lucide-react";
+import apiRequest from "../../components/lib/apiRequest";
+import { AuthContext } from "../../context/AuthContext";
+import "./report.scss";
+
+const reasons = [
+  "Fake or misleading listing",
+  "Scam or fraud",
+  "Wrong price or details",
+  "Inappropriate content",
+  "Harassment or abusive messages",
+  "Other",
+];
 
 export default function ReportPage() {
-  const [reportType, setReportType] = useState("post");
-  const [formData, setFormData] = useState({
-    reportedUser: "",
-    reportedPostId: "",
-    reason: "",
-    details: "",
-    submittedBy: "",
-    submittedEmail: "",
-    screenshot: null,
-  });
-  const [feedback, setFeedback] = useState("");
-  const [showPopup, setShowPopup] = useState(false);
-  const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: files ? files[0] : value,
-    }));
-  };
+  const { currentUser } = useContext(AuthContext);
+  const [searchParams] = useSearchParams();
+  const [reportType, setReportType] = useState(
+    searchParams.get("user") ? "user" : "post"
+  );
+  const [screenshot, setScreenshot] = useState(null);
+  const [status, setStatus] = useState("idle"); // idle | sending | sent
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = new FormData();
-    data.append("reportType", reportType);
-    data.append("reportedUser", formData.reportedUser);
-    data.append("reportedPostId", formData.reportedPostId);
-    data.append("reason", formData.reason);
-    data.append("details", formData.details);
-    data.append("submittedBy", formData.submittedBy);
-    data.append("submittedEmail", formData.submittedEmail);
-    if (formData.screenshot) data.append("screenshot", formData.screenshot);
+    setError("");
+    const data = new FormData(e.target);
+    data.set("reportType", reportType);
+    if (!screenshot) data.delete("screenshot");
 
+    setStatus("sending");
     try {
-      await axios.post("http://localhost:8800/api/report", data);
-      setFeedback("✅ Report submitted successfully.");
-      setShowPopup(true);
-      setTimeout(() => navigate("/"), 5000);
+      await apiRequest.post("/report", data);
+      setStatus("sent");
     } catch (err) {
-      setFeedback("❌ Failed to submit. Try again.");
-      setShowPopup(true);
-      console.error(err);
+      setStatus("idle");
+      setError(
+        err.response?.data?.message || "We couldn't send your report. Please try again."
+      );
     }
   };
 
+  if (status === "sent") {
+    return (
+      <div className="reportPage">
+        <div className="reportDone">
+          <CheckCircle2 size={40} strokeWidth={1.5} />
+          <h1>Thanks for letting us know</h1>
+          <p>
+            Our team reviews every report, usually within 24 hours. We may contact
+            you by email if we need more details.
+          </p>
+          <Link to="/" className="btn btn-dark">
+            Back to home
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="report-page">
-      <form className="report-form" onSubmit={handleSubmit}>
-        <h2>Report a Post or User</h2>
+    <div className="reportPage">
+      <header>
+        <h1 className="page-title">Report a problem</h1>
+        <p className="page-subtitle">
+          Tell us about a listing or user that breaks our rules. Reports are confidential.
+        </p>
+      </header>
 
-        <label>Report Type</label>
-        <select
-          name="reportType"
-          value={reportType}
-          onChange={(e) => setReportType(e.target.value)}
-          required
-        >
-          <option value="post">Post</option>
-          <option value="user">User</option>
-        </select>
+      <form className="reportForm" onSubmit={handleSubmit}>
+        <fieldset className="typeChoice">
+          <legend>What are you reporting?</legend>
+          {[
+            { value: "post", label: "A listing" },
+            { value: "user", label: "A user" },
+          ].map((opt) => (
+            <label key={opt.value} className={reportType === opt.value ? "active" : ""}>
+              <input
+                type="radio"
+                name="reportTypeChoice"
+                value={opt.value}
+                checked={reportType === opt.value}
+                onChange={() => setReportType(opt.value)}
+              />
+              {opt.label}
+            </label>
+          ))}
+        </fieldset>
 
-        {reportType === "post" && (
-          <>
-            <label>Reported Post ID</label>
+        {reportType === "post" ? (
+          <div className="field">
+            <label htmlFor="reportedPostId">Listing ID or link</label>
             <input
-              type="text"
+              id="reportedPostId"
               name="reportedPostId"
-              value={formData.reportedPostId}
-              onChange={handleChange}
-              required
-            />
-          </>
-        )}
-
-        {reportType === "user" && (
-          <>
-            <label>Reported Username or ID</label>
-            <input
               type="text"
-              name="reportedUser"
-              value={formData.reportedUser}
-              onChange={handleChange}
               required
+              defaultValue={searchParams.get("post") || ""}
+              placeholder="e.g. 12 or http://localhost:5173/12"
             />
-          </>
+          </div>
+        ) : (
+          <div className="field">
+            <label htmlFor="reportedUser">Username</label>
+            <input
+              id="reportedUser"
+              name="reportedUser"
+              type="text"
+              required
+              defaultValue={searchParams.get("user") || ""}
+            />
+          </div>
         )}
 
-        <label>Reason</label>
-        <input
-          type="text"
-          name="reason"
-          value={formData.reason}
-          onChange={handleChange}
-          required
-        />
+        <div className="field">
+          <label htmlFor="reason">Reason</label>
+          <select id="reason" name="reason" required defaultValue="">
+            <option value="" disabled>
+              Choose a reason
+            </option>
+            {reasons.map((r) => (
+              <option key={r} value={r}>
+                {r}
+              </option>
+            ))}
+          </select>
+        </div>
 
-        <label>Details (optional)</label>
-        <textarea
-          name="details"
-          rows={4}
-          value={formData.details}
-          onChange={handleChange}
-        />
+        <div className="field">
+          <label htmlFor="details">Details (optional)</label>
+          <textarea
+            id="details"
+            name="details"
+            rows={4}
+            placeholder="What happened? Include anything that helps us investigate."
+          />
+        </div>
 
-        <label>Your Name</label>
-        <input
-          type="text"
-          name="submittedBy"
-          value={formData.submittedBy}
-          onChange={handleChange}
-          required
-        />
+        <div className="fieldRow">
+          <div className="field">
+            <label htmlFor="submittedBy">Your name</label>
+            <input
+              id="submittedBy"
+              name="submittedBy"
+              type="text"
+              required
+              defaultValue={currentUser?.username || ""}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="submittedEmail">Your email</label>
+            <input
+              id="submittedEmail"
+              name="submittedEmail"
+              type="email"
+              required
+              defaultValue={currentUser?.email || ""}
+            />
+          </div>
+        </div>
 
-        <label>Your Email</label>
-        <input
-          type="email"
-          name="submittedEmail"
-          value={formData.submittedEmail}
-          onChange={handleChange}
-          required
-        />
+        <div className="field">
+          <span className="fileLabel">Screenshot (optional)</span>
+          <label className="fileDrop">
+            <input
+              type="file"
+              name="screenshot"
+              accept="image/*"
+              onChange={(e) => setScreenshot(e.target.files[0] || null)}
+            />
+            <span>{screenshot ? screenshot.name : "Choose an image"}</span>
+            <span className="btn-link">{screenshot ? "Change" : "Browse"}</span>
+          </label>
+        </div>
 
-        <label>Upload Screenshot (optional)</label>
-        <input
-          type="file"
-          name="screenshot"
-          accept="image/*"
-          onChange={handleChange}
-        />
-        {formData.screenshot && (
-          <span className="filename">{formData.screenshot.name}</span>
+        {error && (
+          <p className="error-text" role="alert">
+            {error}
+          </p>
         )}
 
-        <button type="submit" className="submit-btn">
-          Submit Report
+        <button className="btn btn-primary submit" disabled={status === "sending"}>
+          {status === "sending" ? "Sending…" : "Submit report"}
         </button>
       </form>
-
-      {showPopup && (
-        <div className="popup">
-          <p>
-            ✅ report submitted successfully! Redirecting to homepage in 5
-            seconds...
-          </p>
-        </div>
-      )}
     </div>
   );
 }

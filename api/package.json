@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
     "prisma": "prisma",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "make-admin": "node scripts/make-admin.mjs"
   },
   "keywords": [],
   "author": "",
