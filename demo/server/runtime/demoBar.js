@@ -4,6 +4,7 @@
 import { dispatch } from "./http.js";
 import { resetDemo } from "./database.js";
 import { clearCookie } from "./cookies.js";
+import { LANGS, getLang, setLang } from "../../i18n/index.js";
 
 const PASSWORD = "demo1234";
 
@@ -53,7 +54,7 @@ const write = (k, v) => {
 };
 
 const CSS = `
-.bdemo{position:fixed;left:16px;bottom:16px;z-index:2147483000;font-family:"Figtree",system-ui,sans-serif;color:#222;-webkit-font-smoothing:antialiased}
+.bdemo{position:fixed;left:16px;bottom:16px;z-index:2147483000;display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-family:"Figtree",system-ui,sans-serif;color:#222;-webkit-font-smoothing:antialiased}
 .bdemo *{box-sizing:border-box}
 .bdemo button{font:inherit;cursor:pointer}
 .bdemo-pill{display:flex;align-items:center;gap:8px;padding:10px 14px;border:0;border-radius:999px;background:#222;color:#fff;font-size:13px;font-weight:700;box-shadow:0 6px 20px rgba(0,0,0,.25)}
@@ -62,7 +63,13 @@ const CSS = `
 .bdemo-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.25);flex:none}
 .bdemo-card{width:300px;max-height:calc(100vh - 32px);overflow:auto;background:#fff;border:1px solid #ebebeb;border-radius:16px;box-shadow:0 12px 36px rgba(0,0,0,.18);padding:14px}
 .bdemo-head{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700}
-.bdemo-x{margin-left:auto;border:0;background:none;font-size:22px;line-height:1;color:#6a6a6a;padding:0 2px}
+.bdemo-x{margin-left:6px;border:0;background:none;font-size:22px;line-height:1;color:#6a6a6a;padding:0 2px}
+.bdemo-lang{display:inline-flex;padding:3px;border-radius:999px;background:#222;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.bdemo-lang button{border:0;border-radius:999px;background:none;color:rgba(255,255,255,.7);font-size:12px;font-weight:700;padding:7px 10px;line-height:1}
+.bdemo-lang button.on{background:#fff;color:#222}
+.bdemo-card .bdemo-lang{margin-left:auto;background:#f2f2f2;box-shadow:none}
+.bdemo-card .bdemo-lang button{color:#6a6a6a;padding:5px 9px}
+.bdemo-card .bdemo-lang button.on{background:#222;color:#fff}
 .bdemo-intro{margin:6px 0 10px;font-size:12px;color:#6a6a6a;line-height:1.4}
 .bdemo-group{margin:10px 0 6px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#929292}
 .bdemo-item{display:flex;flex-direction:column;align-items:flex-start;width:100%;margin-bottom:6px;padding:9px 12px;border:1px solid #ebebeb;border-radius:12px;background:#fff;text-align:left;transition:border-color .15s,background .15s}
@@ -109,6 +116,26 @@ export function mountDemoBar() {
   const here = appOf(window.location.pathname);
   const current = () => all.find((r) => r.key === read(stateKey(here))) || (here === "marketplace" ? all[0] : null);
 
+  // FR | EN: the choice is shared by the three apps
+  const langSwitch = () => {
+    const box = document.createElement("div");
+    box.className = "bdemo-lang";
+    box.setAttribute("role", "group");
+    box.setAttribute("aria-label", "Langue / Language");
+    box.setAttribute("data-no-i18n", "");
+    for (const code of LANGS) {
+      const b = document.createElement("button");
+      b.textContent = code.toUpperCase();
+      b.title = code === "fr" ? "Français" : "English";
+      b.lang = code;
+      b.className = code === getLang() ? "on" : "";
+      b.setAttribute("aria-pressed", String(code === getLang()));
+      b.onclick = () => setLang(code);
+      box.appendChild(b);
+    }
+    return box;
+  };
+
   const render = () => {
     root.innerHTML = "";
     if (!open) {
@@ -119,6 +146,7 @@ export function mountDemoBar() {
       pill.querySelector(".r").textContent = current()?.label || "Pick a role";
       pill.onclick = () => setOpen(true);
       root.appendChild(pill);
+      root.appendChild(langSwitch());
       return;
     }
     const card = document.createElement("div");
@@ -127,6 +155,7 @@ export function mountDemoBar() {
       <div class="bdemo-head"><span class="bdemo-dot"></span>Live demo<button class="bdemo-x" aria-label="Hide the demo panel">×</button></div>
       <p class="bdemo-intro">Every feature works. Pick who you want to be — data stays in your browser.</p>`;
     card.querySelector(".bdemo-x").onclick = () => setOpen(false);
+    card.querySelector(".bdemo-head").insertBefore(langSwitch(), card.querySelector(".bdemo-x"));
     for (const g of ROLES) {
       const h = document.createElement("div");
       h.className = "bdemo-group";
