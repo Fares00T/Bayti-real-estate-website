@@ -2,75 +2,490 @@
 
 .homepage {
   display: flex;
-  height: 100%;
-  .textcont {
-    flex: 3;
+  flex-direction: column;
 
-    .heroText {
-      padding-right: 100px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 40px;
-      height: 100%;
+  .lead {
+    font-size: var(--fs-lead);
+    color: var(--muted);
+    max-width: 52ch;
+  }
 
-      @include md {
-        padding: 0;
+  // ---------- Hero: search on the left, live map of listings on the right ----------
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    align-items: center;
+    gap: var(--space-7);
+    padding-block: var(--space-8) 0;
+
+    @include md {
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+      padding-block: var(--space-6) 0;
+    }
+  }
+
+  .heroText {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    min-width: 0;
+
+    h1 {
+      font-size: var(--fs-display);
+      font-weight: 800;
+      line-height: 1.02;
+      letter-spacing: -0.035em;
+      max-width: 15ch;
+      text-wrap: balance;
+    }
+
+    .lead {
+      margin-bottom: var(--space-3);
+    }
+  }
+
+  .heroAlt {
+    font-size: 15px;
+    color: var(--muted);
+
+    a {
+      color: var(--text);
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+  }
+
+  .heroMap {
+    padding: var(--space-6);
+    background: var(--sand);
+    border-radius: 24px;
+
+    @include md {
+      max-width: 520px;
+      width: 100%;
+      justify-self: center;
+    }
+    @include sm {
+      padding: var(--space-5);
+    }
+
+    .mapSkeleton {
+      aspect-ratio: 1;
+    }
+  }
+
+  // ---------- Listing shelves ----------
+  .shelfTabs {
+    display: flex;
+    gap: 4px;
+    margin-top: var(--space-4);
+
+    button {
+      height: 36px;
+      padding: 0 16px;
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      background: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+
+      &:hover {
+        border-color: var(--text);
       }
-
-      @include sm {
-        justify-content: flex-start;
-      }
-
-      .title {
-        font-size: 64px;
-        @include lg {
-          font-size: 48px;
-        }
-      }
-
-      .infos {
-        display: flex;
-        justify-content: space-between;
-
-        @include sm {
-          display: none;
-        }
-
-        h1 {
-          font-size: 36px;
-          @include lg {
-            font-size: 32px;
-          }
-        }
-
-        h2 {
-          font-size: 20px;
-          font-weight: 300;
-        }
+      &.on {
+        background: var(--text);
+        border-color: var(--text);
+        color: #fff;
       }
     }
   }
 
-  .imgcont {
-    flex: 2;
-    //background-color: #FAF0CA;
-    position: relative;
-    display: flex;
-    align-items: center;
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 40px 24px;
 
     @include md {
-      display: none;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
+    @media (max-width: 860px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    @media (max-width: 560px) {
+      // Phones: swipe sideways through the shelf instead of a long column
+      display: flex;
+      gap: 16px;
+      margin-inline: calc(-1 * var(--gutter));
+      padding-inline: var(--gutter);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
 
-    img {
-      width: 50%;
-      position: absolute;
-      right: 0;
-
-      @include lg {
-        width: 95%;
+      > * {
+        flex: 0 0 82%;
+        scroll-snap-align: start;
       }
     }
+  }
+
+  .skeleton {
+    .img {
+      aspect-ratio: 20 / 19;
+      border-radius: var(--radius-lg);
+      background: var(--surface-2);
+    }
+    .l1,
+    .l2 {
+      height: 12px;
+      margin-top: 12px;
+      border-radius: 4px;
+      background: var(--surface-2);
+      width: 70%;
+    }
+    .l2 {
+      width: 45%;
+      margin-top: 8px;
+    }
+  }
+
+  .emptyShelf {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: var(--space-6);
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius-lg);
+    color: var(--muted);
+  }
+
+  // ---------- Popular wilayas: staggered 2-1-1 / 1-1-2 rows ----------
+  .cityGrid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-auto-rows: 260px;
+    gap: 16px;
+
+    .cityCard:first-child,
+    .cityCard:last-child {
+      grid-column: span 2;
+
+      strong {
+        font-size: 26px;
+      }
+    }
+
+    @include md {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-auto-rows: 200px;
+    }
+    @include xs {
+      grid-auto-rows: 150px;
+      gap: 12px;
+    }
+  }
+
+  .cityCard {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background: var(--sand);
+    isolation: isolate;
+
+    img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+      z-index: -1;
+    }
+
+    // With a photo, the text sits on a soft scrim at the bottom
+    &:has(img) {
+      color: #fff;
+
+      &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.55), transparent 55%);
+        z-index: -1;
+      }
+      .cityText span {
+        color: rgba(255, 255, 255, 0.85);
+      }
+    }
+
+    // No photo yet: the wilaya's number, as on Algerian number plates
+    .code {
+      position: absolute;
+      top: -0.12em;
+      inset-inline-end: 12px;
+      font-size: 112px;
+      font-weight: 800;
+      letter-spacing: -0.06em;
+      line-height: 1;
+      color: #e8e1da;
+      z-index: -1;
+    }
+
+    .cityText {
+      position: absolute;
+      inset-inline: 20px;
+      bottom: 18px;
+      display: flex;
+      flex-direction: column;
+
+      strong {
+        font-size: 20px;
+        letter-spacing: -0.02em;
+      }
+      span {
+        font-size: 14px;
+        color: var(--muted);
+      }
+    }
+
+    &:hover img {
+      transform: scale(1.03);
+    }
+    &:hover strong {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+  }
+
+  // ---------- How it works ----------
+  .howCols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-8);
+
+    @include sm {
+      grid-template-columns: 1fr;
+      gap: var(--space-7);
+    }
+
+    > div {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-5);
+      padding-top: var(--space-5);
+      border-top: 2px solid var(--text);
+    }
+
+    h3 {
+      font-size: 22px;
+      letter-spacing: -0.02em;
+    }
+
+    ol {
+      list-style: none;
+      counter-reset: step;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    li {
+      counter-increment: step;
+      position: relative;
+      padding-inline-start: 44px;
+      color: var(--muted);
+      max-width: 48ch;
+
+      &::before {
+        content: counter(step);
+        position: absolute;
+        inset-inline-start: 0;
+        top: -1px;
+        display: grid;
+        place-items: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: var(--surface-2);
+        color: var(--text);
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      strong {
+        color: var(--text);
+      }
+    }
+  }
+
+  // ---------- Owners (ink band) ----------
+  .ownersBand {
+    .ownersGrid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      align-items: center;
+      gap: var(--space-8);
+
+      @include md {
+        grid-template-columns: 1fr;
+        gap: var(--space-7);
+      }
+    }
+
+    h2 {
+      font-size: var(--fs-h2);
+      letter-spacing: -0.03em;
+      max-width: 16ch;
+    }
+    .lead {
+      margin-top: var(--space-4);
+      color: var(--ink-muted);
+    }
+  }
+
+  .ctaRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: var(--space-6);
+
+    .btn-primary {
+      color: #fff;
+    }
+
+    @include xs {
+      .btn {
+        flex: 1 1 100%;
+      }
+    }
+  }
+
+  .formPreview {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    background: var(--ink-2);
+    border-radius: 20px;
+    padding: var(--space-3) var(--space-5);
+
+    li {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding-block: 18px;
+
+      & + li {
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      > svg {
+        flex-shrink: 0;
+        margin-top: 2px;
+        color: #ff8aa6;
+      }
+      div {
+        display: flex;
+        flex-direction: column;
+      }
+      span {
+        color: var(--ink-muted);
+        font-size: 15px;
+      }
+    }
+  }
+
+  // ---------- Trust ----------
+  .trustGrid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-6);
+
+    @include md {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    @include xs {
+      grid-template-columns: 1fr;
+    }
+
+    > div {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    svg {
+      margin-bottom: var(--space-2);
+    }
+    h3 {
+      font-size: 17px;
+    }
+    p {
+      color: var(--muted);
+      font-size: 15px;
+    }
+    a {
+      color: var(--text);
+      font-weight: 600;
+      text-decoration: underline;
+    }
+  }
+
+  // ---------- Agencies strip ----------
+  .agencyStrip {
+    .stripInner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-5);
+    }
+    .stripActions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    h2 {
+      font-size: 24px;
+      letter-spacing: -0.02em;
+    }
+    p {
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .btn-dark {
+      color: #fff;
+    }
+  }
+}
+
+// Announcement managed from the admin dashboard settings
+.homepage .homeBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: var(--space-7);
+
+  > div {
+    flex: 1;
+  }
+
+  padding-block: 16px;
+  border-block: 1px solid var(--border);
+
+  strong {
+    font-size: 16px;
+  }
+  p {
+    margin-top: 2px;
+    color: var(--muted);
   }
 }

@@ -1,0 +1,66 @@
+.notificationsPage {
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-bottom: 48px;
+
+  .muted {
+    color: var(--muted);
+  }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  ul {
+    list-style: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  li {
+    border-bottom: 1px solid var(--border);
+
+    &:last-child {
+      border-bottom: none;
+    }
+    &.unread {
+      background: var(--accent-soft);
+
+      strong::before {
+        content: "";
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        margin-right: 8px;
+        border-radius: 50%;
+        background: var(--brand);
+        vertical-align: 2px;
+      }
+    }
+  }
+  a {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 14px 18px;
+
+    &:hover {
+      background: var(--surface-2);
+    }
+  }
+  span {
+    color: var(--muted);
+    font-size: 14px;
+    white-space: pre-line;
+  }
+  small {
+    color: var(--subtle);
+    font-size: 12px;
+  }
+}

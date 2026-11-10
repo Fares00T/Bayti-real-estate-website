@@ -1,0 +1,32 @@
+.wrongPlatform {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 28px;
+  text-align: center;
+
+  > svg {
+    color: var(--brand);
+  }
+  h1 {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+  > p {
+    max-width: 40ch;
+    color: var(--muted);
+  }
+  .btn {
+    margin-top: 8px;
+  }
+  .countdown {
+    font-size: 13px;
+    color: var(--subtle);
+  }
+  .btn-link {
+    margin-top: 4px;
+    font-size: 14px;
+  }
+}

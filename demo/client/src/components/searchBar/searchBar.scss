@@ -1,0 +1,150 @@
+@use "../../responsive.scss" as *;
+
+.searchBar {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr 1.2fr 1.3fr auto;
+  align-items: center;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding-right: 8px;
+  background: #fff;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.08);
+
+  .seg {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    height: 66px;
+    padding: 0 24px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &:hover {
+      background: var(--surface-2);
+    }
+
+    // thin divider between segments, hidden next to the hovered one
+    & + .seg::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 18px;
+      bottom: 18px;
+      width: 1px;
+      background: var(--border-strong);
+    }
+    &:hover::before,
+    &:hover + .seg::before {
+      opacity: 0;
+    }
+
+    &.disabled {
+      cursor: not-allowed;
+    }
+
+    .label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    select,
+    input {
+      width: 100%;
+      min-width: 0;
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      color: var(--muted);
+      padding: 2px 0;
+      cursor: inherit;
+      appearance: none;
+      -moz-appearance: textfield;
+
+      &:focus {
+        outline: none;
+        color: var(--text);
+      }
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+      }
+    }
+
+    &:focus-within {
+      background: #fff;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.16);
+      z-index: 1;
+
+      &::before,
+      & + .seg::before {
+        opacity: 0;
+      }
+    }
+  }
+
+  .range {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--subtle);
+
+    input {
+      cursor: text;
+    }
+  }
+
+  .go {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 48px;
+    padding: 0 16px;
+    border: none;
+    border-radius: 999px;
+    background: var(--brand-gradient);
+    color: #fff;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: filter 0.15s;
+
+    &:hover {
+      filter: brightness(0.94);
+    }
+  }
+
+  // Phones and small tablets: stacked card instead of a pill
+  @include md {
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding: 8px;
+    border-radius: 24px;
+
+    .seg {
+      height: 60px;
+      padding: 0 16px;
+      border-radius: 16px;
+
+      &::before {
+        display: none;
+      }
+    }
+
+    .go {
+      grid-column: 1 / -1;
+      justify-content: center;
+      margin-top: 6px;
+    }
+  }
+
+  @include xs {
+    grid-template-columns: 1fr;
+  }
+}

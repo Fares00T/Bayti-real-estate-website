@@ -1,0 +1,171 @@
+@use "../../responsive.scss" as *;
+
+.userTours {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  .toursHead h2 {
+    font-size: 22px;
+    font-weight: 600;
+  }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+
+    strong {
+      color: var(--text);
+      font-size: 18px;
+    }
+    .btn {
+      margin-top: 8px;
+    }
+  }
+
+  .groupTitle {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .tourList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .tourCard {
+    display: flex;
+    gap: 20px;
+    padding: 16px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-lg);
+
+    &.muted {
+      .tourImage img {
+        filter: grayscale(0.6);
+        opacity: 0.8;
+      }
+    }
+
+    @include xs {
+      flex-direction: column;
+    }
+  }
+
+  .tourImage {
+    flex: 0 0 140px;
+    height: 140px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background: var(--surface-2);
+    display: grid;
+    place-items: center;
+    color: var(--muted);
+    font-size: 13px;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    @include xs {
+      flex-basis: auto;
+      height: 180px;
+    }
+  }
+
+  .tourBody {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .tourTop {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+
+    .agency {
+      font-size: 14px;
+      color: var(--muted);
+    }
+  }
+
+  h3 {
+    font-size: 17px;
+    font-weight: 600;
+
+    a:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .where {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .when {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 18px;
+    margin-top: 8px;
+    font-size: 14px;
+    font-weight: 600;
+
+    span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .hint {
+      font-weight: 400;
+      color: var(--muted);
+    }
+  }
+
+  .note,
+  .message {
+    margin-top: 8px;
+    font-size: 14px;
+  }
+
+  .message {
+    color: var(--muted);
+  }
+
+  .tourActions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 12px;
+
+    .btn-link {
+      font-size: 14px;
+    }
+  }
+}
+
+.tourSkeleton {
+  height: 172px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(90deg, #f2f2f2 25%, #f7f7f7 50%, #f2f2f2 75%);
+  background-size: 200% 100%;
+  animation: toursShimmer 1.4s infinite;
+}
+
+@keyframes toursShimmer {
+  to {
+    background-position: -200% 0;
+  }
+}

@@ -1,56 +1,161 @@
 @use "../../responsive.scss" as *;
 
 .listPage {
-  display: flex;
-  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
 
-  .pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 2rem;
-
-    button {
-      padding: 0.5rem 1rem;
-      border: none;
-      background-color: #4b7bec;
-      color: white;
-      cursor: pointer;
-      border-radius: 5px;
-
-      &:disabled {
-        background-color: #ccc;
-        cursor: not-allowed;
-      }
-    }
-
-    span {
-      font-weight: bold;
-    }
+  @include md {
+    grid-template-columns: 1fr;
   }
 
   .listContainer {
-    flex: 3;
-    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+  }
 
-    .wrapper {
-      height: 100%;
-      padding-right: 50px;
-      display: flex;
-      flex-direction: column;
-      gap: 50px;
-      overflow-y: scroll;
-      padding-bottom: 50px;
-      scrollbar-width: none;
+  .resultBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .resultCount {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .sortSelect {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: var(--muted);
+
+    select {
+      height: 36px;
+      padding: 0 10px;
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--text);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    @include xs {
+      span {
+        display: none;
+      }
     }
   }
-  .mapContainer {
-    flex: 2;
-    height: 100%;
 
+  .results {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 36px 20px;
+  }
+
+  .loading {
+    padding: 40px;
+    text-align: center;
+    color: var(--muted);
+  }
+
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding-top: 16px;
+
+    .btn-outline {
+      border-radius: 999px;
+    }
+
+    .pages {
+      display: flex;
+      gap: 4px;
+
+      button {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: none;
+        background: transparent;
+        color: var(--text);
+        font-weight: 600;
+        cursor: pointer;
+
+        &:hover {
+          background: var(--surface-2);
+        }
+        &.active {
+          background: var(--text);
+          color: #fff;
+        }
+      }
+    }
+  }
+
+  .mapContainer {
+    position: sticky;
+    top: calc(var(--nav-h) + 24px);
+    height: calc(100vh - var(--nav-h) - 48px);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--surface-2);
+
+    // Phones and tablets: full-height map, shown instead of the list
     @include md {
+      position: relative;
+      top: 0;
+      height: calc(100dvh - var(--nav-h) - 120px);
+      min-height: 360px;
+    }
+
+    .mapPlaceholder {
+      height: 100%;
+    }
+  }
+
+  .viewToggle {
+    display: none;
+  }
+
+  @include md {
+    &.view-list .mapContainer {
       display: none;
+    }
+    &.view-map .listContainer > :not(.filter) {
+      display: none;
+    }
+
+    // Floating switch, thumb-reachable at the bottom of the screen
+    .viewToggle {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 900;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 48px;
+      padding: 0 22px;
+      border: none;
+      border-radius: 999px;
+      background: var(--text);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
     }
   }
 }

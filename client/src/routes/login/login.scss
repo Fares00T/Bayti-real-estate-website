@@ -1,61 +1,300 @@
-.login {
-  height: 100%;
+@use "../../responsive.scss" as *;
+
+// Shared by login and register
+.authPage {
   display: flex;
+  justify-content: center;
+  padding: 24px 0 48px;
 
-  .formContainer {
-    flex: 3;
-    height: 100%;
+  @include sm {
+    padding: 0;
+  }
+}
+
+.authCard {
+  width: 100%;
+  max-width: 568px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+
+  @include sm {
+    border: none;
+    box-shadow: none;
+  }
+
+  .authHeader {
+    height: 64px;
+    display: grid;
+    place-items: center;
+    border-bottom: 1px solid var(--border);
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .authBody {
+    padding: 32px 24px 28px;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
 
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-
-      input {
-        padding: 20px;
-        border: 1px solid gray;
-        border-radius: 5px;
-      }
-
-      button {
-        padding: 20px;
-        border-radius: 5px;
-        border: none;
-        background-color: teal;
-        color: white;
-        font-weight: bold;
-        cursor: pointer;
-
-        &:disabled {
-          background-color: #bed9d8;
-          cursor: not-allowed;
-        }
-      }
-
-      span {
-        color: rgba(255, 0, 0, 0.591);
-      }
-
-      a {
-        font-size: 14px;
-        color: gray;
-        border-bottom: 1px solid gray;
-        width: max-content;
-      }
+    @include sm {
+      padding: 24px 0;
     }
   }
 
-  .imgContainer {
-    flex: 2;
-    //background-color: #fcf5f3;
+  h1 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .stack {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    img {
+    flex-direction: column;
+  }
+
+  .cell {
+    position: relative;
+    display: block;
+    height: 56px;
+    border: 1px solid #b0b0b0;
+    margin-top: -1px;
+    background: var(--surface);
+
+    &:first-child {
+      margin-top: 0;
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+    &:last-child {
+      border-radius: 0 0 var(--radius) var(--radius);
+    }
+    &:only-child {
+      border-radius: var(--radius);
+    }
+
+    // Focused cell sits above its neighbours so the dark border shows fully
+    &:focus-within {
+      z-index: 1;
+      border-color: var(--text);
+      box-shadow: 0 0 0 1px var(--text);
+      border-radius: var(--radius);
+    }
+
+    &.invalid {
+      z-index: 1;
+      border-color: var(--danger);
+      background: var(--danger-soft);
+    }
+
+    .label {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 16px;
+      pointer-events: none;
+      transition: all 0.15s ease;
+    }
+
+    input {
       width: 100%;
+      height: 100%;
+      border: none;
+      background: transparent;
+      padding: 22px 12px 6px;
+      font-size: 16px;
+      color: var(--text);
+
+      &:focus {
+        outline: none;
+      }
+    }
+
+    input:focus + .label,
+    input:not(:placeholder-shown) + .label {
+      top: 15px;
+      font-size: 12px;
+    }
+
+    .toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: underline;
+      cursor: pointer;
+      color: var(--text);
     }
   }
+
+  .hint {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: -6px;
+  }
+
+  .alert {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-lg);
+    font-size: 14px;
+
+    .alertIcon {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--danger);
+      color: #fff;
+    }
+    strong {
+      display: block;
+    }
+    span {
+      color: var(--muted);
+    }
+  }
+
+  .submit {
+    width: 100%;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 12px;
+    color: var(--muted);
+
+    &::before,
+    &::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+  }
+
+  .switch {
+    font-size: 14px;
+    text-align: center;
+    color: var(--muted);
+
+    a {
+      color: var(--text);
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+  }
+
+  .demo {
+    font-size: 13px;
+    color: var(--muted);
+    background: var(--surface-2);
+    border-radius: var(--radius);
+    padding: 10px 12px;
+  }
+}
+
+// The front door for agencies: a quiet link to their own workspace
+.authPage .agencyDoor {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  padding: 14px 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  font-size: 14px;
+  color: var(--muted);
+  transition: border-color 0.15s, background 0.15s;
+
+  svg {
+    flex-shrink: 0;
+    color: var(--text);
+  }
+  strong {
+    color: var(--text);
+  }
+  &:hover {
+    border-color: var(--text);
+    background: var(--surface-2);
+  }
+}
+
+.authPage div.agencyDoor:hover {
+  border-color: var(--border-strong);
+  background: none;
+}
+.authPage .agencyDoor a {
+  color: var(--text);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+// Sign-up starts by choosing the kind of account
+.authPage .accountChoice {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 24px;
+
+  .choice {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-lg);
+    transition: border-color 0.15s, background 0.15s;
+
+    strong {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 4px;
+      font-size: 15px;
+    }
+    small {
+      font-size: 13px;
+      line-height: 1.35;
+      color: var(--muted);
+    }
+  }
+  .choice.active {
+    border: 2px solid var(--text);
+    padding: 13px;
+  }
+  a.choice:hover {
+    border-color: var(--text);
+    background: var(--surface-2);
+  }
+}
+
+.authPage .alert a {
+  display: inline-block;
+  margin-top: 4px;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: underline;
+}
+
+.authPage .authLead {
+  margin-top: -8px;
+  color: var(--muted);
+  font-size: 15px;
 }

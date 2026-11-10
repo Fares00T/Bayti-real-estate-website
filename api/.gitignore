@@ -1,2 +1,6 @@
 node_modules
 .env
+# private uploads (legal documents, report screenshots)
+storage/
+# database dumps (contain personal data)
+backups/*.json

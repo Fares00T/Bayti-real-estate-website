@@ -1,116 +1,586 @@
 @use "../../responsive.scss" as *;
 
-:root {
-  --color-bg: #fcf5f3;
-  --color-primary: teal;
-  --color-text: #333;
-  --spacing: 1.5rem;
-  --radius: 0.5rem;
-  --input-padding: 1rem;
-}
-
-html,
-body,
-#root {
-  height: auto;
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.agencyFormPage {
-  min-height: 100vh;
-  width: 100%;
-  background-color: #fff;
-  color: var(--color-text);
+.agencyApply {
+  max-width: 760px;
+  margin: 0 auto;
   display: flex;
-  justify-content: center;
-  padding: var(--spacing);
-  box-sizing: border-box;
+  flex-direction: column;
+  gap: 28px;
+  padding-bottom: 48px;
 
-  overflow-y: auto; // ensures scrolling works
-  overflow-x: hidden;
-
-  .popup {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #d4edda;
-    color: #155724;
-    padding: 16px 24px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    z-index: 9999;
-    font-size: 16px;
+  .loading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
   }
-  .formContainer {
-    width: 100%;
-    max-width: 1000px;
-    //background-color: ;
-    border-radius: var(--radius);
-    padding: var(--spacing);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
-    h1 {
-      font-weight: 700;
-      font-size: 2rem;
-      margin-bottom: var(--spacing);
-      color: var(--color-primary);
+  .spin {
+    animation: spin 0.9s linear infinite;
+  }
+
+  .muted {
+    color: var(--muted);
+  }
+
+  .notice {
+    padding: 14px 18px;
+    border-radius: var(--radius-lg);
+    background: var(--surface-2);
+
+    a {
+      font-weight: 600;
+      text-decoration: underline;
+    }
+  }
+
+  .introCard,
+  .statusPanel,
+  .stepCard {
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+
+    @include xs {
+      padding: 18px 16px;
     }
 
-    form {
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--spacing);
-      justify-content: space-between;
+    h2 {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+  }
 
-      .item {
-        flex: 1 1 clamp(250px, 45%, 480px);
+  .introCard ul {
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    small {
+      color: var(--muted);
+    }
+  }
+
+  .legalNote {
+    display: flex;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: var(--radius);
+    background: var(--info-soft);
+    color: var(--info);
+    font-size: 14px;
+
+    svg {
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+  }
+
+  // ---------- status ----------
+  .statusTop {
+    display: flex;
+    gap: 14px;
+
+    svg {
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    p {
+      color: var(--muted);
+      margin-top: 4px;
+    }
+  }
+  .s-approved .statusTop svg {
+    color: var(--success);
+  }
+  .s-rejected .statusTop svg {
+    color: var(--danger);
+  }
+  .s-info_required {
+    border-color: var(--warning);
+    .statusTop svg {
+      color: var(--warning);
+    }
+  }
+
+  blockquote {
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    border-radius: var(--radius);
+    white-space: pre-line;
+
+    strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+  }
+
+  .history {
+    list-style: none;
+
+    li {
+      position: relative;
+      padding: 0 0 14px 20px;
+      border-left: 1px solid var(--border-strong);
+      margin-left: 5px;
+
+      &::before {
+        content: "";
+        position: absolute;
+        left: -5px;
+        top: 5px;
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: #fff;
+        border: 2px solid var(--text);
+      }
+      &:last-child {
+        border-left-color: transparent;
+      }
+    }
+    strong {
+      font-size: 14px;
+    }
+    .by {
+      font-weight: 400;
+      color: var(--muted);
+    }
+    p {
+      font-size: 14px;
+      white-space: pre-line;
+    }
+    small {
+      color: var(--muted);
+      font-size: 12px;
+    }
+  }
+
+  // ---------- form ----------
+  .applyForm {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    scroll-margin-top: calc(var(--nav-h) + 16px);
+  }
+
+  .stepper {
+    list-style: none;
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+
+    li {
+      flex: 1;
+      min-width: max-content;
+    }
+    button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 4px 12px;
+      border: none;
+      border-bottom: 2px solid var(--border);
+      background: none;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .num {
+      width: 22px;
+      height: 22px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--surface-2);
+      font-size: 12px;
+    }
+    .current button {
+      color: var(--text);
+      border-bottom-color: var(--text);
+      .num {
+        background: var(--text);
+        color: #fff;
+      }
+    }
+    .done button {
+      color: var(--text);
+      .num {
+        background: var(--success-soft);
+        color: var(--success);
+      }
+    }
+  }
+
+  .grid2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+
+    @include xs {
+      grid-template-columns: 1fr;
+    }
+    .wide {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .field {
+    input,
+    select {
+      height: 48px;
+    }
+    select {
+      appearance: auto;
+    }
+    .hint {
+      font-size: 12px;
+      color: var(--muted);
+    }
+  }
+  .req {
+    color: var(--brand);
+  }
+  .opt {
+    font-weight: 400;
+    color: var(--muted);
+  }
+
+  .entityChoice {
+    border: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+
+    @include xs {
+      grid-template-columns: 1fr;
+    }
+    legend {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    label {
+      display: flex;
+      gap: 10px;
+      padding: 14px 16px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+
+      input {
+        accent-color: var(--text);
+        margin-top: 3px;
+      }
+      span {
         display: flex;
         flex-direction: column;
-        gap: 0.5rem;
-
-        label {
-          font-weight: 600;
-          font-size: 0.95rem;
-        }
-
-        input,
-        select {
-          padding: var(--input-padding);
-          border: 1px solid #ccc;
-          border-radius: var(--radius);
-          font-size: 1rem;
-          background-color: #fff;
-          outline-offset: 2px;
-
-          &:focus {
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 2px rgba(0, 128, 128, 0.2);
-          }
-        }
       }
-
-      .sendButton {
-        flex: 1 1 100%;
-        padding: var(--input-padding);
-        border: none;
-        border-radius: var(--radius);
-        background-color: var(--color-primary);
-        color: #fff;
-        font-weight: 700;
-        font-size: 1.1rem;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        margin-top: var(--spacing);
-
-        &:hover {
-          //background-color: darken(var(--color-primary), 10%);
-        }
+      small {
+        color: var(--muted);
+      }
+      &.active {
+        border-color: var(--text);
+        box-shadow: 0 0 0 1px var(--text);
       }
     }
   }
+
+  .logoRow {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+
+    img {
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+  }
+
+  // ---------- documents ----------
+  .docKinds {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+  }
+  .docKind {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+  .docKindHead {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+
+    > div {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    small {
+      color: var(--muted);
+      font-size: 13px;
+    }
+    label.busy {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+    @include xs {
+      flex-wrap: wrap;
+    }
+  }
+  .docState {
+    width: 22px;
+    height: 22px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border-radius: 50%;
+    border: 1.5px solid var(--border-strong);
+    margin-top: 1px;
+  }
+  .has .docState {
+    border-color: var(--success);
+    background: var(--success);
+    color: #fff;
+  }
+
+  .docRows {
+    list-style: none;
+    margin: 10px 0 0 34px;
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 0;
+      font-size: 14px;
+    }
+    .docName {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      border: none;
+      background: none;
+      text-align: left;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
+  .submittedDocs .docRows {
+    margin-left: 0;
+  }
+  .iconBtn {
+    width: 32px;
+    height: 32px;
+    display: grid;
+    place-items: center;
+    border: none;
+    border-radius: 50%;
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+
+    &:hover {
+      background: var(--surface-2);
+      color: var(--text);
+    }
+  }
+
+  // ---------- review ----------
+  .missingBox,
+  .readyBox {
+    padding: 12px 16px;
+    border-radius: var(--radius);
+  }
+  .missingBox {
+    background: var(--warning-soft);
+
+    strong {
+      color: var(--warning);
+    }
+    ul {
+      margin: 6px 0 0 20px;
+    }
+  }
+  .readyBox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--success-soft);
+    color: var(--success);
+    font-weight: 600;
+  }
+
+  .summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px 20px;
+
+    dt {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    dd {
+      overflow-wrap: anywhere;
+    }
+  }
+
+  .alert {
+    display: flex;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    background: var(--danger-soft);
+    color: var(--danger);
+    font-size: 14px;
+
+    svg {
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    ul {
+      margin: 6px 0 0 18px;
+    }
+  }
+
+  .stepActions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    .saveState {
+      font-size: 13px;
+    }
+    @include xs {
+      .btn {
+        padding: 0 16px;
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Shorter form: required items up front, extras folded away
+.agencyApply {
+  .small {
+    font-size: 13px;
+  }
+
+  .needList {
+    list-style: none;
+    margin-left: 0;
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      svg {
+        color: var(--success);
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  .segChoice {
+    display: inline-flex;
+    align-self: flex-start;
+    padding: 4px;
+    gap: 4px;
+    border-radius: 999px;
+    background: var(--surface-2);
+
+    label {
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+
+      input {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+      }
+      &.active {
+        background: #fff;
+        color: var(--text);
+        box-shadow: var(--shadow-sm);
+      }
+      &:focus-within {
+        outline: 2px solid var(--text);
+        outline-offset: 2px;
+      }
+    }
+  }
+
+  .more {
+    border-top: 1px solid var(--border);
+    padding-top: 6px;
+
+    summary {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 0;
+      font-weight: 600;
+      cursor: pointer;
+      list-style: none;
+
+      &::-webkit-details-marker {
+        display: none;
+      }
+      svg {
+        margin-left: auto;
+        transition: transform 0.15s;
+      }
+    }
+    &[open] summary svg {
+      transform: rotate(180deg);
+    }
+  }
+  .moreBody {
+    padding: 6px 0 4px;
+  }
+
+  .missingBox .btn-link {
+    margin-top: 8px;
+  }
+}
+
+.agencyApply .stepCard .muted a,
+.agencyApply .alert a {
+  font-weight: 600;
+  text-decoration: underline;
 }

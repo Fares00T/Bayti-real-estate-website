@@ -1,0 +1,995 @@
+[
+    {
+      "mattricule": 1,
+      "name": "Adrar",
+      "dairats": [
+        { "code": 101, "name": "ADRAR" },
+        { "code": 103, "name": "CHAROUINE" },
+        { "code": 104, "name": "REGGANE" },
+        { "code": 108, "name": "TSABIT" },
+        { "code": 109, "name": "TIMIMOUN" },
+        { "code": 111, "name": "ZAOUIAT KOUNTA" },
+        { "code": 112, "name": "AOULEF" },
+        { "code": 115, "name": "FENOUGHIL" },
+        { "code": 116, "name": "TINERKOUK" },
+        { "code": 123, "name": "AOUGROUT" },
+        { "code": 125, "name": "BORDJ BADJI MOKHTAR" },
+        { "code": 1090, "name": "TIMIMOUN (wilaya déléguée)" },
+        { "code": 1250, "name": "BORDJ BADJI MOKHTAR (wilaya déléguée)" }
+      ]
+    },
+    {
+      "mattricule": 2,
+      "name": "Chlef",
+      "dairats": [
+        { "code": 201, "name": "CHLEF" },
+        { "code": 202, "name": "TENES" },
+        { "code": 204, "name": "EL KARIMIA" },
+        { "code": 206, "name": "TAOUGRIT" },
+        { "code": 207, "name": "BENI HAOUA" },
+        { "code": 210, "name": "OULED FARES" },
+        { "code": 212, "name": "BOUKADIR" },
+        { "code": 220, "name": "ZEBOUDJA" },
+        { "code": 222, "name": "ABOU EL HASSANE" },
+        { "code": 223, "name": "EL MARSA" },
+        { "code": 229, "name": "OUED FODDA" },
+        { "code": 230, "name": "OULED BEN ABDELKADER" },
+        { "code": 232, "name": "AIN MERANE" }
+      ]
+    },
+    {
+      "mattricule": 3,
+      "name": "Laghouat",
+      "dairats": [
+        { "code": 301, "name": "LAGHOUAT" },
+        { "code": 302, "name": "KSAR EL HIRANE" },
+        { "code": 304, "name": "SIDI MAKHLOUF" },
+        { "code": 306, "name": "HASSI R'MEL" },
+        { "code": 307, "name": "AIN MADHI" },
+        { "code": 310, "name": "GUELTAT SIDI SAAD" },
+        { "code": 311, "name": "AIN SIDI ALI" },
+        { "code": 312, "name": "EL BEIDHA" },
+        { "code": 313, "name": "SIDI BOUZID" },
+        { "code": 314, "name": "EL KHEITER" },
+        { "code": 315, "name": "TADJEMOUT" },
+        { "code": 316, "name": "TAJNA" },
+        { "code": 317, "name": "KHENEG" },
+        { "code": 318, "name": "TADJROUNA" },
+        { "code": 319, "name": "TADJEMOUT" },
+        { "code": 320, "name": "EL ASSAFIA" },
+        { "code": 321, "name": "HADJ MECHRI" },
+        { "code": 322, "name": "SEBSEB" },
+        { "code": 323, "name": "EL HAOUAITA" }
+      ]
+    },
+    {
+      "mattricule": 4,
+      "name": "Oum El Bouaghi",
+      "dairats": [
+        { "code": 401, "name": "OUM EL BOUAGHI" },
+        { "code": 402, "name": "AIN BEIDA" },
+        { "code": 403, "name": "AIN MLILA" },
+        { "code": 404, "name": "AIN KERCHA" },
+        { "code": 405, "name": "M'SILA" },
+        { "code": 406, "name": "SIGUS" },
+        { "code": 407, "name": "F'KIRA" },
+        { "code": 408, "name": "GASBAT" },
+        { "code": 409, "name": "AIN ZITOUN" },
+        { "code": 410, "name": "AIN BABOUCHE" },
+        { "code": 411, "name": "BIR CHOUHADA" },
+        { "code": 412, "name": "AIN FAOUDA" },
+        { "code": 413, "name": "OULED HAMLA" },
+        { "code": 414, "name": "RAHIA" },
+        { "code": 415, "name": "EL HARMILIA" }
+      ]
+    },
+    {
+      "mattricule": 5,
+      "name": "Batna",
+      "dairats": [
+        { "code": 501, "name": "BATNA" },
+        { "code": 502, "name": "T'KOUT" },
+        { "code": 503, "name": "N'GAOUS" },
+        { "code": 504, "name": "BARRIKA" },
+        { "code": 505, "name": "MEROUANA" },
+        { "code": 506, "name": "TIMGAD" },
+        { "code": 507, "name": "EL MADHER" },
+        { "code": 508, "name": "AZIL ABED ESSALAM" },
+        { "code": 509, "name": "AIN DJASSER" },
+        { "code": 510, "name": "GUERZELANE" },
+        { "code": 511, "name": "SERIANA" },
+        { "code": 512, "name": "MAAFA" },
+        { "code": 513, "name": "KEROUCHE" },
+        { "code": 514, "name": "SEGAOUSA" },
+        { "code": 515, "name": "THENIA" },
+        { "code": 516, "name": "DJELFA" },
+        { "code": 517, "name": "AIN TOUTA" },
+        { "code": 518, "name": "AIN YAGOUT" },
+        { "code": 519, "name": "BOUMAGUEUR" },
+        { "code": 520, "name": "BOUARIF" },
+        { "code": 521, "name": "OUED CHAABA" },
+        { "code": 522, "name": "BIR EL ATER" },
+        { "code": 523, "name": "AN NASSIYA" },
+        { "code": 524, "name": "EL HASSI" }
+      ]
+    },
+    {
+      "mattricule": 6,
+      "name": "Béjaïa",
+      "dairats": [
+        { "code": 601, "name": "BEJAIA" },
+        { "code": 602, "name": "SIDI AICH" },
+        { "code": 603, "name": "AKBOU" },
+        { "code": 604, "name": "TICHY" },
+        { "code": 605, "name": "AMIZOUR" },
+        { "code": 606, "name": "KHERRATA" },
+        { "code": 607, "name": "ADEKAR" },
+        { "code": 608, "name": "TIZI N'BERBER" },
+        { "code": 609, "name": "AIN ZAOUIA" },
+        { "code": 610, "name": "TIMEZRIT" },
+        { "code": 611, "name": "IFRI OUZELLAGUEN" },
+        { "code": 612, "name": "TAMRIDJET" },
+        { "code": 613, "name": "TALA HAMZA" },
+        { "code": 614, "name": "CHEMINI" },
+        { "code": 615, "name": "AKFADOU" },
+        { "code": 616, "name": "SEDDOUK" },
+        { "code": 617, "name": "TAOURIRT IGHIL" },
+        { "code": 618, "name": "SOUMMAR" },
+        { "code": 619, "name": "MELBOU" },
+        { "code": 620, "name": "TIZI N'BERBER" },
+        { "code": 621, "name": "DRAA EL KAIED" },
+        { "code": 622, "name": "TIZI GHENIF" },
+        { "code": 623, "name": "TINEBDAR" },
+        { "code": 624, "name": "OUZELLAGUEN" },
+        { "code": 625, "name": "BOUKHELLA" },
+        { "code": 626, "name": "IGHIL ALI" },
+        { "code": 627, "name": "FENAIA IL MATEN" },
+        { "code": 628, "name": "TIFRA" },
+        { "code": 629, "name": "BENI MAOUCHE" },
+        { "code": 630, "name": "TAMOKRA" },
+        { "code": 631, "name": "TAMRIDJET" },
+        { "code": 632, "name": "TIZI N'BERBER" },
+        { "code": 633, "name": "DRAA BEN KHEDDA" },
+        { "code": 634, "name": "OUZELLAGUEN" },
+        { "code": 635, "name": "BENI MELLAL" },
+        { "code": 636, "name": "ADEKAR" },
+        { "code": 637, "name": "AKBOU" },
+        { "code": 638, "name": "SIDI AICH" },
+        { "code": 639, "name": "TIZI N'BERBER" }
+      ]
+    },
+    {
+      "mattricule": 7,
+      "name": "Biskra",
+      "dairats": [
+        { "code": 701, "name": "BISKRA" },
+        { "code": 702, "name": "EL HADJIRA" },
+        { "code": 703, "name": "EL ABIODH SIDI CHEIKH" },
+        { "code": 704, "name": "EL ARAWI" },
+        { "code": 705, "name": "OUED EL ABTAL" },
+        { "code": 706, "name": "TOLGA" },
+        { "code": 707, "name": "SIDI OKBA" },
+        { "code": 708, "name": "CITE EL OSMANIA" },
+        { "code": 709, "name": "CITE EL OSMANIA" },
+        { "code": 710, "name": "CITE EL OSMANIA" },
+        { "code": 711, "name": "CITE EL OSMANIA" },
+        { "code": 712, "name": "CITE EL OSMANIA" }
+      ]
+    },
+    {
+      "mattricule": 8,
+      "name": "Bechar",
+      "dairats": [
+        { "code": 801, "name": "BECHAR" },
+        { "code": 802, "name": "ABADLA" },
+        { "code": 803, "name": "KENADSA" },
+        { "code": 804, "name": "MERIDJA" },
+        { "code": 805, "name": "IGLI" },
+        { "code": 806, "name": "BOUARFA" },
+        { "code": 807, "name": "TAGHIT" },
+        { "code": 808, "name": "EL OUATA" },
+        { "code": 809, "name": "BENE ABBES" },
+        { "code": 810, "name": "KRAKDA" },
+        { "code": 811, "name": "TAMERT" },
+        { "code": 812, "name": "TABELBALA" }
+      ]
+    },
+    {
+      "mattricule": 9,
+      "name": "Blida",
+      "dairats": [
+        { "code": 901, "name": "BLIDA" },
+        { "code": 902, "name": "EL AFFROUN" },
+        { "code": 903, "name": "BOUINAN" },
+        { "code": 904, "name": "OULED YAICH" },
+        { "code": 905, "name": "MOUZAIA" },
+        { "code": 906, "name": "MEFTAH" },
+        { "code": 907, "name": "BOUARFA" },
+        { "code": 908, "name": "BENI TAMOU" },
+        { "code": 909, "name": "OULED AICHA" },
+        { "code": 910, "name": "CHREA" }
+      ]
+    },
+    {
+      "mattricule": 10,
+      "name": "Bouira",
+      "dairats": [
+        { "code": 1001, "name": "BOUIRA" },
+        { "code": 1002, "name": "SOUR EL GHOUZLANE" },
+        { "code": 1003, "name": "LAKHDARIA" },
+        { "code": 1004, "name": "BIR GHBALOU" },
+        { "code": 1005, "name": "AANIBA" },
+        { "code": 1006, "name": "DIRAH" },
+        { "code": 1007, "name": "SOUFT" },
+        { "code": 1008, "name": "EL ASNAM" },
+        { "code": 1009, "name": "KADIRIA" }
+      ]
+    },
+    {
+      "mattricule": 11,
+      "name": "Tamanrasset",
+      "dairats": [
+        { "code": 1101, "name": "TAMANRASSET" },
+        { "code": 1102, "name": "ABALESSA" },
+        { "code": 1103, "name": "IN KHALIL" },
+        { "code": 1104, "name": "TAMANRASSET" },
+        { "code": 1105, "name": "IN M'GHEZEL" },
+        { "code": 1106, "name": "TAMANRASSET" },
+        { "code": 1107, "name": "TAMANRASSET" },
+        { "code": 1108, "name": "TAMANRASSET" }
+      ]
+    },
+    {
+      "mattricule": 12,
+      "name": "Tebessa",
+      "dairats": [
+        { "code": 1201, "name": "TEBESSA" },
+        { "code": 1202, "name": "BIR EL ATER" },
+        { "code": 1203, "name": "NEGRINE" },
+        { "code": 1204, "name": "EL AOUINET" },
+        { "code": 1205, "name": "MORSOTT" },
+        { "code": 1206, "name": "EL MA LABIOD" },
+        { "code": 1207, "name": "HAMMAM DERRADJI" },
+        { "code": 1208, "name": "EL KOUIF" },
+        { "code": 1209, "name": "CHERIA" },
+        { "code": 1210, "name": "STAH GUENTIS" },
+        { "code": 1211, "name": "BIR DHEB" },
+        { "code": 1212, "name": "AIN ZERGA" },
+        { "code": 1213, "name": "OULED RECHACHE" },
+        { "code": 1214, "name": "EL HOUARESSI" },
+        { "code": 1215, "name": "BIR EL ATER" },
+        { "code": 1216, "name": "AIN LABOUCHE" },
+        { "code": 1217, "name": "EL AOUINET" },
+        { "code": 1218, "name": "STAH GUENTIS" },
+        { "code": 1219, "name": "BIR DHEB" },
+        { "code": 1220, "name": "AIN ZERGA" },
+        { "code": 1221, "name": "OULED RECHACHE" },
+        { "code": 1222, "name": "EL HOUARESSI" }
+      ]
+    }, 
+  {
+      "mattricule": 13,
+      "name": "Tlemcen",
+      "dairats": [
+        { "code": 1301, "name": "TLEMCEN" },
+        { "code": 1302, "name": "MAGHNIA" },
+        { "code": 1303, "name": "SABRA" },
+        { "code": 1304, "name": "BENSEKRANE" },
+        { "code": 1305, "name": "REMCHI" },
+        { "code": 1306, "name": "FELLAOUCENE" },
+        { "code": 1307, "name": "GHARDAIA" },
+        { "code": 1308, "name": "SEBDOU" },
+        { "code": 1309, "name": "BENI OUARSOUS" },
+        { "code": 1310, "name": "AIN EL HOUT" },
+        { "code": 1311, "name": "EL ARICHA" },
+        { "code": 1312, "name": "BAB EL ASSA" }
+      ]
+    },
+  {
+    "mattricule": 14,
+    "name": "Tiaret",
+    "dairats": [
+      { "code": 1401, "name": "TIARET" },
+      { "code": 1402, "name": "AIN DEFLA" },
+      { "code": 1403, "name": "MAHAZ" },
+      { "code": 1404, "name": "AIN EL HADID" },
+      { "code": 1405, "name": "AIN BOUCHEKIF" },
+      { "code": 1406, "name": "MEDROUSS" },
+      { "code": 1407, "name": "SEBKHA" },
+      { "code": 1408, "name": "MELLOUKH" },
+      { "code": 1409, "name": "TAGHDEMPT" },
+      { "code": 1410, "name": "OUED LILLI" },
+      { "code": 1411, "name": "CHEHAIMA" },
+      { "code": 1412, "name": "Z'MOUL" },
+      { "code": 1413, "name": "ZAHANA" },
+      { "code": 1414, "name": "TIDDA" },
+      { "code": 1415, "name": "HAMMA" },
+      { "code": 1416, "name": "ROGASSI" },
+      { "code": 1417, "name": "NAIMA" }
+    ]
+  },
+  {
+    "mattricule": 15,
+    "name": "Tizi Ouzou",
+    "dairats": [
+      { "code": 1501, "name": "TIZI OUZOU" },
+      { "code": 1502, "name": "AZAZGA" },
+      { "code": 1503, "name": "DRAA BEN KHEDDA" },
+      { "code": 1504, "name": "LARBAA NATH IRATHEN" },
+      { "code": 1505, "name": "MAKOUDA" },
+      { "code": 1506, "name": "BENI DOUALA" },
+      { "code": 1507, "name": "BOGHNI" },
+      { "code": 1508, "name": "MEKLA" },
+      { "code": 1509, "name": "AIN EL HAMMAM" },
+      { "code": 1510, "name": "OUAGUENOUN" },
+      { "code": 1511, "name": "MAATKAS" },
+      { "code": 1512, "name": "TIZI GHENIF" },
+      { "code": 1513, "name": "OUADHIAS" },
+      { "code": 1514, "name": "AIN ZAOUA" },
+      { "code": 1515, "name": "IBOUDRAREN" },
+      { "code": 1516, "name": "DRAA EL MIZAN" },
+      { "code": 1517, "name": "TIZI RACHED" },
+      { "code": 1518, "name": "AIN EL HADJAR" },
+      { "code": 1519, "name": "MAKOUDA" },
+      { "code": 1520, "name": "TIZI N'TLET" }
+    ]
+  },{
+    "mattricule": 16,
+    "name": "Algiers",
+    "dairats": [
+      { "code": 1601, "name": "CASBAH" },
+      { "code": 1602, "name": "BAB EL OUED" },
+      { "code": 1603, "name": "ZERIBET EL OUED" },
+      { "code": 1604, "name": "BIR MOURAD RAIS" },
+      { "code": 1605, "name": "HUSSEIN DEY" },
+      { "code": 1606, "name": "BIRKHADEM" },
+      { "code": 1607, "name": "BOUZAREAH" },
+      { "code": 1608, "name": "KOUBA" },
+      { "code": 1609, "name": "EL HARRACH" },
+      { "code": 1610, "name": "DAR EL BEIDA" },
+      { "code": 1611, "name": "AIN BENIAN" },
+      { "code": 1612, "name": "BAB EZZOUAR" },
+      { "code": 1613, "name": "OUED KORICHE" },
+      { "code": 1614, "name": "BIRTOUTA" },
+      { "code": 1615, "name": "DELY IBRAHIM" },
+      { "code": 1616, "name": "AIN TAYA" },
+      { "code": 1617, "name": "EL MOURADIA" },
+      { "code": 1618, "name": "BORDJ EL KIFFAN" },
+      { "code": 1619, "name": "BORDJ EL BAHRI" },
+      { "code": 1620, "name": "MOHAMMADIA" }
+    ]
+  },{
+    "mattricule": 17,
+    "name": "Djelfa",
+    "dairats": [
+      { "code": 1701, "name": "DJELFA" },
+      { "code": 1702, "name": "AIN OUSSERA" },
+      { "code": 1703, "name": "EL IDRISSIA" },
+      { "code": 1704, "name": "HASSI BAHBAH" },
+      { "code": 1705, "name": "MESSAAD" },
+      { "code": 1706, "name": "FAID EL BOTMA" },
+      { "code": 1707, "name": "GUETTARA" },
+      { "code": 1708, "name": "HAD SAHARY" },
+      { "code": 1709, "name": "AIN EL IBEL" },
+      { "code": 1710, "name": "DAR CHIOUKH" },
+      { "code": 1711, "name": "SIDI LAADJEL" },
+      { "code": 1712, "name": "DOUIS" },
+      { "code": 1713, "name": "EL GUEDID" },
+      { "code": 1714, "name": "AIN MAABED" },
+      { "code": 1715, "name": "BOUIRA LAHDAB" },
+      { "code": 1716, "name": "BENHAR" },
+      { "code": 1717, "name": "HASSI EL EUCH" },
+      { "code": 1718, "name": "M'LILIHA" },
+      { "code": 1719, "name": "EL MOUAIZ" },
+      { "code": 1720, "name": "ZAAFRANE" }
+    ]
+  },{
+    "mattricule": 18,
+    "name": "Jijel",
+    "dairats": [
+      { "code": 1801, "name": "JIJEL" },
+      { "code": 1802, "name": "EL MILIA" },
+      { "code": 1803, "name": "CHEKFA" },
+      { "code": 1804, "name": "SIDI ABDELAZIZ" },
+      { "code": 1805, "name": "TEXENNA" },
+      { "code": 1806, "name": "BOUROUB" },
+      { "code": 1807, "name": "SETTARA" },
+      { "code": 1808, "name": "GHEBALA" },
+      { "code": 1809, "name": "OULED ASKEUN" },
+      { "code": 1810, "name": "SELMA" },
+      { "code": 1811, "name": "TASSAFT" },
+      { "code": 1812, "name": "BOUDRIAA" },
+      { "code": 1813, "name": "EL ANCER" },
+      { "code": 1814, "name": "KAOUS" },
+      { "code": 1815, "name": "TARDJEN" },
+      { "code": 1816, "name": "DJIMLA" }
+    ]
+  },{
+    "mattricule": 19,
+    "name": "Sétif",
+    "dairats": [
+      { "code": 1901, "name": "SETIF" },
+      { "code": 1902, "name": "EL EULMA" },
+      { "code": 1903, "name": "AIN OULMANE" },
+      { "code": 1904, "name": "BOUANDAS" },
+      { "code": 1905, "name": "BIR EL ARCH" },
+      { "code": 1906, "name": "DJEMILA" },
+      { "code": 1907, "name": "BOUZEGUEUNE" },
+      { "code": 1908, "name": "AIN AZEL" },
+      { "code": 1909, "name": "AIN EL KEBIRA" },
+      { "code": 1910, "name": "MAAOUIA" },
+      { "code": 1911, "name": "BENI OURTILANE" },
+      { "code": 1912, "name": "GUENZET" },
+      { "code": 1913, "name": "EL OURICIA" },
+      { "code": 1914, "name": "BENI AZIZ" },
+      { "code": 1915, "name": "AIN ABESSA" },
+      { "code": 1916, "name": "AIN LAHDJEL" },
+      { "code": 1917, "name": "AIN SEBT" },
+      { "code": 1918, "name": "BENI CHEBANA" },
+      { "code": 1919, "name": "TAMLAHT" },
+      { "code": 1920, "name": "TIZI N'BECHAR" }
+    ]
+  },{
+    "mattricule": 20,
+    "name": "Saïda",
+    "dairats": [
+      { "code": 2001, "name": "SAIDA" },
+      { "code": 2002, "name": "AIN EL HADJAR" },
+      { "code": 2003, "name": "OULED BRAHIM" },
+      { "code": 2004, "name": "TIRCINE" },
+      { "code": 2005, "name": "SIDI BOUZID" },
+      { "code": 2006, "name": "MOULAY LARBI" },
+      { "code": 2007, "name": "SIDI AHMED" },
+      { "code": 2008, "name": "AIN SEKHOUNA" },
+      { "code": 2009, "name": "SIDI AMAR" },
+      { "code": 2010, "name": "SIDI BAKHLOUF" },
+      { "code": 2011, "name": "TAOUIALA" },
+      { "code": 2012, "name": "EL HASSASNA" },
+      { "code": 2013, "name": "YOUB" }
+    ]
+  },{
+    "mattricule": 21,
+    "name": "Skikda",
+    "dairats": [
+      { "code": 2101, "name": "SKIKDA" },
+      { "code": 2102, "name": "COLLO" },
+      { "code": 2103, "name": "EL HADAIEK" },
+      { "code": 2104, "name": "BENI BECHIR" },
+      { "code": 2105, "name": "AZZABA" },
+      { "code": 2106, "name": "BEN AZZOUZ" },
+      { "code": 2107, "name": "AIN ZOUIT" },
+      { "code": 2108, "name": "TAMALOUS" },
+      { "code": 2109, "name": "RAMDANE DJAMEL" },
+      { "code": 2110, "name": "EL HARB" },
+      { "code": 2111, "name": "OULED ATTIA" },
+      { "code": 2112, "name": "DJEN DEL" },
+      { "code": 2113, "name": "AIN KEBIRA" },
+      { "code": 2114, "name": "HAMMADI KROUMA" },
+      { "code": 2115, "name": "FILFILA" },
+      { "code": 2116, "name": "EL MARSA" },
+      { "code": 2117, "name": "BENI OULBANE" }
+    ]
+  },{
+    "mattricule": 22,
+    "name": "Sidi Bel Abbès",
+    "dairats": [
+      { "code": 2201, "name": "SIDI BEL ABBES" },
+      { "code": 2202, "name": "TELAGH" },
+      { "code": 2203, "name": "MERINE" },
+      { "code": 2204, "name": "TESSALA" },
+      { "code": 2205, "name": "SIDI ALI BENYOUB" },
+      { "code": 2206, "name": "MOSTEFA BEN BRAHIM" },
+      { "code": 2207, "name": "TENIRA" },
+      { "code": 2208, "name": "BENACHOUR" },
+      { "code": 2209, "name": "AMARNIS" },
+      { "code": 2210, "name": "BOUKHANEFIS" },
+      { "code": 2211, "name": "SIDI LAHCENE" },
+      { "code": 2212, "name": "AIN EL BERD" },
+      { "code": 2213, "name": "MOULEY SLISSEN" },
+      { "code": 2214, "name": "LAVIGERIE" },
+      { "code": 2215, "name": "DJENIANE MOUHAREB" },
+      { "code": 2216, "name": "SIDI ALI BENYOUB" }
+    ]
+  },{
+    "mattricule": 23,
+    "name": "Annaba",
+    "dairats": [
+      { "code": 2301, "name": "ANNABA" },
+      { "code": 2302, "name": "EL HADJAR" },
+      { "code": 2303, "name": "SIDI AMAR" },
+      { "code": 2304, "name": "EL BOUNI" },
+      { "code": 2305, "name": "BERAHMOUN" },
+      { "code": 2306, "name": "EL EULMA" },
+      { "code": 2307, "name": "TREAT" },
+      { "code": 2308, "name": "OUED DOUROU" },
+      { "code": 2309, "name": "CHEURFA" },
+      { "code": 2310, "name": "SIDI AMAR" }
+    ]
+  },{
+    "mattricule": 24,
+    "name": "Guelma",
+    "dairats": [
+      { "code": 2401, "name": "GUELMA" },
+      { "code": 2402, "name": "HELIOPOLIS" },
+      { "code": 2403, "name": "BENDJARAH" },
+      { "code": 2404, "name": "HOUARI BOUMEDIENE" },
+      { "code": 2405, "name": "AIN SANDEL" },
+      { "code": 2406, "name": "BORDJ SABATH" },
+      { "code": 2407, "name": "OUED ZENATI" },
+      { "code": 2408, "name": "BOUATTOU" },
+      { "code": 2409, "name": "EL FEDJOUDJ" },
+      { "code": 2410, "name": "GUELMA" },
+      { "code": 2411, "name": "OUED CHELIA" }
+    ]
+  },{
+    "mattricule": 25,
+    "name": "Constantine",
+    "dairats": [
+      { "code": 2501, "name": "CONSTANTINE" },
+      { "code": 2502, "name": "EL KHROUB" },
+      { "code": 2503, "name": "ALI MENDJELI" },
+      { "code": 2504, "name": "OUED EL ATEU" },
+      { "code": 2505, "name": "AIN ABID" },
+      { "code": 2506, "name": "EL KENNAR" },
+      { "code": 2507, "name": "DJEBEL EL OUEH" },
+      { "code": 2508, "name": "ZIGHOUD YOUCEF" },
+      { "code": 2509, "name": "AIN SMARA" },
+      { "code": 2510, "name": "HAMA BOUZIANE" },
+      { "code": 2511, "name": "KADIRIA" },
+      { "code": 2512, "name": "HAMMA BOUZIANE" }
+    ]
+  },{
+    "mattricule": 26,
+    "name": "Médéa",
+    "dairats": [
+      { "code": 2601, "name": "MEDEA" },
+      { "code": 2602, "name": "BERROUAGHIA" },
+      { "code": 2603, "name": "AIN BOUCIF" },
+      { "code": 2604, "name": "OULED DEBBAH" },
+      { "code": 2605, "name": "AIN OUSSERA" },
+      { "code": 2606, "name": "KASR EL BOUKHARI" },
+      { "code": 2607, "name": "EL OMARIA" },
+      { "code": 2608, "name": "OULED SLISSENE" },
+      { "code": 2609, "name": "GUELB EL KEBIR" },
+      { "code": 2610, "name": "EL AZIZIA" },
+      { "code": 2611, "name": "AIN BOUCHERIT" },
+      { "code": 2612, "name": "OULED MAHMOUD" },
+      { "code": 2613, "name": "AIN BESSAM" }
+    ]
+  },{
+    "mattricule": 27,
+    "name": "Mostaganem",
+    "dairats": [
+      { "code": 2701, "name": "MOSTAGANEM" },
+      { "code": 2702, "name": "AIN NOUISSI" },
+      { "code": 2703, "name": "EL HASSAINIA" },
+      { "code": 2704, "name": "HASSI MAMOUN" },
+      { "code": 2705, "name": "AIN DELA" },
+      { "code": 2706, "name": "ABBASSIA" },
+      { "code": 2707, "name": "AIN TEDLES" },
+      { "code": 2708, "name": "SIDI ALI" },
+      { "code": 2709, "name": "BENI YAGOUB" },
+      { "code": 2710, "name": "AIN NOUISSI" },
+      { "code": 2711, "name": "TAMSEN" },
+      { "code": 2712, "name": "BENI YAGOUB" },
+      { "code": 2713, "name": "SOUR" },
+      { "code": 2714, "name": "OULED BOULAHBAL" }
+    ]
+  },{
+    "mattricule": 28,
+    "name": "M'Sila",
+    "dairats": [
+      { "code": 2801, "name": "M'SILA" },
+      { "code": 2802, "name": "AIN EL HADJAR" },
+      { "code": 2803, "name": "AIN RICH" },
+      { "code": 2804, "name": "BEN SROUR" },
+      { "code": 2805, "name": "OULED SIDI BRAHIM" },
+      { "code": 2806, "name": "MEDJEDEL" },
+      { "code": 2807, "name": "AIN EL MELH" },
+      { "code": 2808, "name": "KHOUBANA" },
+      { "code": 2809, "name": "SIDI HADJERES" },
+      { "code": 2810, "name": "KHEBILA" },
+      { "code": 2811, "name": "HAMMAM DHALA" },
+      { "code": 2812, "name": "EL HAMEL" },
+      { "code": 2813, "name": "OULED DERRADJ" },
+      { "code": 2814, "name": "MEGHAIER" }
+    ]
+  },{
+    "mattricule": 29,
+    "name": "Mascara",
+    "dairats": [
+      { "code": 2901, "name": "MASCARA" },
+      { "code": 2902, "name": "SIG" },
+      { "code": 2903, "name": "GHARDAIA" },
+      { "code": 2904, "name": "SIDI ALI" },
+      { "code": 2905, "name": "EL BORDJ" },
+      { "code": 2906, "name": "TIZI" },
+      { "code": 2907, "name": "OUED EL ABTAL" },
+      { "code": 2908, "name": "ZEHANA" },
+      { "code": 2909, "name": "AIN FARES" },
+      { "code": 2910, "name": "MOHAMMADI" },
+      { "code": 2911, "name": "EL KEUR" },
+      { "code": 2912, "name": "HACINE" },
+      { "code": 2913, "name": "AIN FEKAN" },
+      { "code": 2914, "name": "MATEMORE" },
+      { "code": 2915, "name": "TIZI" },
+      { "code": 2916, "name": "EL BORDJ" },
+      { "code": 2917, "name": "SIDI BEL ABBES" }
+    ]
+  },{
+    "mattricule": 30,
+    "name": "Ouargla",
+    "dairats": [
+      { "code": 3001, "name": "OUARGLA" },
+      { "code": 3002, "name": "HASSI MESSAOUD" },
+      { "code": 3003, "name": "TOUGGOURT" },
+      { "code": 3004, "name": "TEMACINE" },
+      { "code": 3005, "name": "MEGARINE" },
+      { "code": 3006, "name": "EL HADJIRA" },
+      { "code": 3007, "name": "SIDI SLIMANE" },
+      { "code": 3008, "name": "TAMACINE" },
+      { "code": 3009, "name": "TOUGGOURT" },
+      { "code": 3010, "name": "N'GOUSSA" },
+      { "code": 3011, "name": "ROUISSAT" },
+      { "code": 3012, "name": "EL BORMA" }
+    ]
+  },{
+    "mattricule": 31,
+    "name": "Oran",
+    "dairats": [
+      { "code": 3101, "name": "ORAN" },
+      { "code": 3102, "name": "ES SENIA" },
+      { "code": 3103, "name": "ARZEW" },
+      { "code": 3104, "name": "BIR EL DJIR" },
+      { "code": 3105, "name": "AIN TURK" },
+      { "code": 3106, "name": "BETHIOUA" },
+      { "code": 3107, "name": "GDYEL" },
+      { "code": 3108, "name": "BIR EL DJIR" },
+      { "code": 3109, "name": "ORAN" },
+      { "code": 3110, "name": "ORAN" },
+      { "code": 3111, "name": "ORAN" },
+      { "code": 3112, "name": "ORAN" },
+      { "code": 3113, "name": "ORAN" },
+      { "code": 3114, "name": "ORAN" }
+    ]
+  },{
+    "mattricule": 32,
+    "name": "El Bayadh",
+    "dairats": [
+      { "code": 3201, "name": "EL BAYADH" },
+      { "code": 3202, "name": "BOUALEM" },
+      { "code": 3203, "name": "BRIZINA" },
+      { "code": 3204, "name": "LABIODH SIDI CHEIKH" },
+      { "code": 3205, "name": "ROGASSI" },
+      { "code": 3206, "name": "CHELLALA" },
+      { "code": 3207, "name": "GHASSOUL" },
+      { "code": 3208, "name": "SIDI AMAR" },
+      { "code": 3209, "name": "TADMIT" },
+      { "code": 3210, "name": "CHEGUIG" },
+      { "code": 3211, "name": "ARDJOUN" },
+      { "code": 3212, "name": "STEL" },
+      { "code": 3213, "name": "BOUGTOUB" },
+      { "code": 3214, "name": "EL KHEITER" },
+      { "code": 3215, "name": "EL ABIODH SIDI CHEIKH" }
+    ]
+  },{
+    "mattricule": 33,
+    "name": "Illizi",
+    "dairats": [
+      { "code": 3301, "name": "ILLIZI" },
+      { "code": 3302, "name": "DJANET" },
+      { "code": 3303, "name": "IN AMENAS" },
+      { "code": 3304, "name": "BORDJ OMOKA" },
+      { "code": 3305, "name": "BORDJ EL HAOUASS" },
+      { "code": 3306, "name": "IN AMENAS" },
+      { "code": 3307, "name": "DJANET" },
+      { "code": 3308, "name": "IN AMENAS" },
+      { "code": 3309, "name": "IN AMENAS" },
+      { "code": 3310, "name": "IN AMENAS" }
+    ]
+  },{
+    "mattricule": 34,
+    "name": "Bordj Bou Arreridj",
+    "dairats": [
+      { "code": 3401, "name": "BORDJ BOU ARRERIDJ" },
+      { "code": 3402, "name": "RAS EL OUED" },
+      { "code": 3403, "name": "BIR KASDALI" },
+      { "code": 3404, "name": "AIN TAGHROUT" },
+      { "code": 3405, "name": "EL HAMMADIA" },
+      { "code": 3406, "name": "DJAAFRA" },
+      { "code": 3407, "name": "BORDJ ZEMOURA" },
+      { "code": 3408, "name": "EL ACHIR" },
+      { "code": 3409, "name": "SIDI M'BAREK" },
+      { "code": 3410, "name": "MEDJAN" },
+      { "code": 3411, "name": "KHILLAL" }
+    ]
+  },{
+    "mattricule": 35,
+    "name": "Boumerdès",
+    "dairats": [
+      { "code": 3501, "name": "BOUMERDES" },
+      { "code": 3502, "name": "BORDJ MENAIEL" },
+      { "code": 3503, "name": "DELLES" },
+      { "code": 3504, "name": "THENIA" },
+      { "code": 3505, "name": "ISER" },
+      { "code": 3506, "name": "BAGHLIA" },
+      { "code": 3507, "name": "CORRICHA" },
+      { "code": 3508, "name": "BOUDOUAOU" },
+      { "code": 3509, "name": "OULED MOUSSA" },
+      { "code": 3510, "name": "KHEMIS EL KHECHNA" },
+      { "code": 3511, "name": "CHABET EL AMEUR" },
+      { "code": 3512, "name": "NAFTAL" },
+      { "code": 3513, "name": "OULED HADDAD" },
+      { "code": 3514, "name": "BOUDOUAOU" }
+    ]
+  },{
+    "mattricule": 36,
+    "name": "El Tarf",
+    "dairats": [
+      { "code": 3601, "name": "EL TARF" },
+      { "code": 3602, "name": "BOUHADJAR" },
+      { "code": 3603, "name": "BOUTELDJA" },
+      { "code": 3604, "name": "EL KALA" },
+      { "code": 3605, "name": "DREAN" },
+      { "code": 3606, "name": "CHIHANI" },
+      { "code": 3607, "name": "BOUGOUS" },
+      { "code": 3608, "name": "BEN MHIDI" },
+      { "code": 3609, "name": "ZITOUNA" }
+    ]
+  },{
+    "mattricule": 37,
+    "name": "Tindouf",
+    "dairats": [
+      { "code": 3701, "name": "TINDOUF" },
+      { "code": 3702, "name": "OUM EL ASSAL" },
+      { "code": 3703, "name": "TINZAOUATINE" },
+      { "code": 3704, "name": "TINDOUF" },
+      { "code": 3705, "name": "TINDOUF" },
+      { "code": 3706, "name": "TINDOUF" },
+      { "code": 3707, "name": "TINDOUF" },
+      { "code": 3708, "name": "TINDOUF" }
+    ]
+  },{
+    "mattricule": 38,
+    "name": "Tissemsilt",
+    "dairats": [
+      { "code": 3801, "name": "TISSEMSILT" },
+      { "code": 3802, "name": "LAZHARIA" },
+      { "code": 3803, "name": "KHENCHELA" },
+      { "code": 3804, "name": "BORDJ EMIR ABDELKADER" },
+      { "code": 3805, "name": "LARBAA" },
+      { "code": 3806, "name": "THENIET EL HAD" },
+      { "code": 3807, "name": "SIDI SLIMANE" },
+      { "code": 3808, "name": "AMMARI" },
+      { "code": 3809, "name": "MAACEM" },
+      { "code": 3810, "name": "YELAL" },
+      { "code": 3811, "name": "SIDI BOUABIDA" },
+      { "code": 3812, "name": "SIDI LANNEB" }
+    ]
+  },{
+    "mattricule": 39,
+    "name": "El Oued",
+    "dairats": [
+      { "code": 3901, "name": "EL OUED" },
+      { "code": 3902, "name": "GUEMAR" },
+      { "code": 3903, "name": "REGUIBA" },
+      { "code": 3904, "name": "DJAMAA" },
+      { "code": 3905, "name": "DEBILA" },
+      { "code": 3906, "name": "HASSI KHALIFA" },
+      { "code": 3907, "name": "MAGRANE" },
+      { "code": 3908, "name": "MIH OUENS" },
+      { "code": 3909, "name": "OUED EL ALENDA" },
+      { "code": 3910, "name": "SIDI AOUN" },
+      { "code": 3911, "name": "STILL" },
+      { "code": 3912, "name": "TAGHZOUT" }
+    ]
+  },{
+    "mattricule": 41,
+    "name": "Souk Ahras",
+    "dairats": [
+      { "code": 4101, "name": "SOUK AHRAS" },
+      { "code": 4102, "name": "TAOURA" },
+      { "code": 4103, "name": "MECHROHA" },
+      { "code": 4104, "name": "OULED DRISS" },
+      { "code": 4105, "name": "HADDADA" },
+      { "code": 4106, "name": "BIR BOUHOUCHE" },
+      { "code": 4107, "name": "OULED MOUMEN" },
+      { "code": 4108, "name": "TERRAGUELA" },
+      { "code": 4109, "name": "TAOURA" },
+      { "code": 4110, "name": "HADJEB EL AIN" },
+      { "code": 4111, "name": "SEDRATA" },
+      { "code": 4112, "name": "OULED DRISS" }
+    ]
+  },{
+    "mattricule": 42,
+    "name": "Tipaza",
+    "dairats": [
+      { "code": 4201, "name": "TIPAZA" },
+      { "code": 4202, "name": "KOLEA" },
+      { "code": 4203, "name": "HADJOUT" },
+      { "code": 4204, "name": "SIDI AMAR" },
+      { "code": 4205, "name": "BOU ISMAIL" },
+      { "code": 4206, "name": "BOU HAROUN" },
+      { "code": 4207, "name": "CHAIBA" },
+      { "code": 4208, "name": "AMMAL" },
+      { "code": 4209, "name": "AHMER EL AIN" },
+      { "code": 4210, "name": "MEURAD" },
+      { "code": 4211, "name": "MENACEUR" },
+      { "code": 4212, "name": "GOURAYA" },
+      { "code": 4213, "name": "DOUAOUDA" }
+    ]
+  },{
+    "mattricule": 43,
+    "name": "Mila",
+    "dairats": [
+      { "code": 4301, "name": "MILA" },
+      { "code": 4302, "name": "FERDJIOUA" },
+      { "code": 4303, "name": "CHEGHAR" },
+      { "code": 4304, "name": "ROUAH" },
+      { "code": 4305, "name": "AIN OUSSERA" },
+      { "code": 4306, "name": "OUED ATHMENIA" },
+      { "code": 4307, "name": "GRAREM GOUGA" },
+      { "code": 4308, "name": "TADJENANET" },
+      { "code": 4309, "name": "TELEGHMA" },
+      { "code": 4310, "name": "AIN MELLOUK" },
+      { "code": 4311, "name": "OULED BOUGHALEM" },
+      { "code": 4312, "name": "AIN TINE" },
+      { "code": 4313, "name": "SIDI MEROUANE" }
+    ]
+  },{
+    "mattricule": 44,
+    "name": "Aïn Defla",
+    "dairats": [
+      { "code": 4401, "name": "AIN DEFLA" },
+      { "code": 4402, "name": "MILIAN" },
+      { "code": 4403, "name": "HAMMAM RIGHA" },
+      { "code": 4404, "name": "ARIB" },
+      { "code": 4405, "name": "BIR OULED KHELIFA" },
+      { "code": 4406, "name": "BORDJ EMIR KHALED" },
+      { "code": 4407, "name": "EL ABADIA" },
+      { "code": 4408, "name": "EL AMRA" },
+      { "code": 4409, "name": "EL ATTAF" },
+      { "code": 4410, "name": "SOUBRA" },
+      { "code": 4411, "name": "AIN LECHIAKH" },
+      { "code": 4412, "name": "AIN SOLTAN" },
+      { "code": 4413, "name": "AIN TORKI" }
+    ]
+  },{
+    "mattricule": 45,
+    "name": "Naâma",
+    "dairats": [
+      { "code": 4501, "name": "NAAMA" },
+      { "code": 4502, "name": "MECHERIA" },
+      { "code": 4503, "name": "AIN SEFRA" },
+      { "code": 4504, "name": "ASSI" },
+      { "code": 4505, "name": "DJENIANE BOU REZG" },
+      { "code": 4506, "name": "MAADID" },
+      { "code": 4507, "name": "SIDI BOUTOUCHENT" },
+      { "code": 4508, "name": "TIOUT" },
+      { "code": 4509, "name": "ZOUATEK" }
+    ]
+  },{
+    "mattricule": 46,
+    "name": "Aïn Témouchent",
+    "dairats": [
+      { "code": 4601, "name": "AIN TEMOUCHENT" },
+      { "code": 4602, "name": "HAMMAM BOUHADJAR" },
+      { "code": 4603, "name": "AIN KIHAL" },
+      { "code": 4604, "name": "EL MALAH" },
+      { "code": 4605, "name": "BENI SAF" },
+      { "code": 4606, "name": "OULED BESSAM" },
+      { "code": 4607, "name": "CHABAT EL LEHAM" },
+      { "code": 4608, "name": "OULED KHELLAF" },
+      { "code": 4609, "name": "TAMZOURA" },
+      { "code": 4610, "name": "SIDI BEN ADDA" },
+      { "code": 4611, "name": "TERGA" }
+    ]
+  },{
+    "mattricule": 47,
+    "name": "Ghardaïa",
+    "dairats": [
+      { "code": 4701, "name": "GHARDAIA" },
+      { "code": 4702, "name": "EL MENIAA" },
+      { "code": 4703, "name": "METLILI" },
+      { "code": 4704, "name": "EL GUERRARA" },
+      { "code": 4705, "name": "DHAYET BEN DHAR" },
+      { "code": 4706, "name": "SEBSEB" },
+      { "code": 4707, "name": "BERRIANE" },
+      { "code": 4708, "name": "HASSI EL GARA" },
+      { "code": 4709, "name": "EL KRECHBA" }
+    ]
+  },{
+    "mattricule": 48,
+    "name": "Relizane",
+    "dairats": [
+      { "code": 4801, "name": "RELIZANE" },
+      { "code": 4802, "name": "AMMI MOUSSA" },
+      { "code": 4803, "name": "OGGAZ" },
+      { "code": 4804, "name": "DJIDIOUA" },
+      { "code": 4805, "name": "EL GUELTA" },
+      { "code": 4806, "name": "EL H'MADNA" },
+      { "code": 4807, "name": "OUED EL DJEMAA" },
+      { "code": 4808, "name": "MAZOUNA" },
+      { "code": 4809, "name": "SIDI KHETTAB" },
+      { "code": 4810, "name": "ZEMMOURA" },
+      { "code": 4811, "name": "SIDI M'HAMED BEN ALLOUCHE" },
+      { "code": 4812, "name": "AIN TAREK" }
+    ]
+  },{
+    "mattricule": 49,
+    "name": "Timimoun",
+    "dairats": [
+      { "code": 4901, "name": "TIMIMOUN" },
+      { "code": 4902, "name": "AOUGROUT" },
+      { "code": 4903, "name": "CHAROUINE" }
+    ]
+  },{
+    "mattricule": 50,
+    "name": "Bordj Badji Mokhtar",
+    "dairats": [
+      { "code": 5001, "name": "BORDJ BADJI MOKHTAR" },
+      { "code": 5002, "name": "TIMIAOUINE" }
+    ]
+  },{
+    "mattricule": 51,
+    "name": "Ouled Djellal",
+    "dairats": [
+      { "code": 5101, "name": "OULED DJELLAL" },
+      { "code": 5102, "name": "SIDI KHALED" },
+      { "code": 5103, "name": "RAS EL MIAD" }
+    ]
+  },{
+    "mattricule": 52,
+    "name": "Beni Abbes",
+    "dairats": [
+      { "code": 5201, "name": "BENI ABBES" },
+      { "code": 5202, "name": "KERZAZ" },
+      { "code": 5203, "name": "TIMOUDI" },
+      { "code": 5204, "name": "OULED KHODEIR" }
+    ]
+  },{
+    "mattricule": 53,
+    "name": "In Salah",
+    "dairats": [
+      { "code": 5301, "name": "IN SALAH" },
+      { "code": 5302, "name": "IN GUEZZAM" },
+      { "code": 5303, "name": "FOGGARET EZZOUA" }
+    ]
+  },{
+    "mattricule": 54,
+    "name": "In Guezzam",
+    "dairats": [
+      { "code": 5401, "name": "IN GUEZZAM" },
+      { "code": 5402, "name": "TINZAOUATINE" }
+    ]
+  },{
+    "mattricule": 55,
+    "name": "Touggourt",
+    "dairats": [
+      { "code": 5501, "name": "TOUGGOURT" },
+      { "code": 5502, "name": "MEGARINE" },
+      { "code": 5503, "name": "TEMACINE" }
+    ]
+  },{
+    "mattricule": 56,
+    "name": "Djanet",
+    "dairats": [
+      { "code": 5601, "name": "DJANET" },
+      { "code": 5602, "name": "BORDJ EL HAOUASS" }
+    ]
+  },{
+    "mattricule": 57,
+    "name": "El M'Ghair",
+    "dairats": [
+      { "code": 5701, "name": "EL M'GHAIR" },
+      { "code": 5702, "name": "DJAMAA" },
+      { "code": 5703, "name": "SIDI KHELIL" }
+    ]
+  },{
+    "mattricule": 58,
+    "name": "El Meniaa",
+    "dairats": [
+      { "code": 5801, "name": "EL MENIAA" },
+      { "code": 5802, "name": "HASSI GARA" }
+    ]
+  }]

@@ -1,0 +1,12 @@
+{
+  "name": "bayti-investor-demo",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Bayti marketplace, agency platform and admin dashboard running entirely in the browser",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "serve": "node scripts/serve.mjs",
+    "smoke": "node scripts/smoke.mjs"
+  }
+}

@@ -1,5 +1,5 @@
-.list{
-    display: flex;
-    flex-direction: column;
-    gap: 50px;
-  }
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 32px 24px;
+}

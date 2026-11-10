@@ -1,367 +1,473 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { Link } from "react-router-dom";
+import { Phone, Mail, CalendarDays, Clock } from "lucide-react";
 import apiRequest from "../../components/lib/apiRequest";
+import { AuthContext } from "../../context/AuthContext";
+import AgencyTeam from "../../components/agencyTeam/AgencyTeam";
 import "./agencyDashboard.scss";
 
-export default function AgencyDashboard({ currentUser }) {
-  const [tourRequests, setTourRequests] = useState([]);
+const TABS = [
+  ["all", "All"],
+  ["pending", "Pending"],
+  ["confirmed", "Upcoming"],
+  ["completed", "Completed"],
+  ["declined", "Declined"],
+  ["cancelled", "Cancelled"],
+];
+
+const STATUS_LABEL = {
+  pending: "Pending",
+  confirmed: "Confirmed",
+  completed: "Completed",
+  declined: "Declined",
+  cancelled: "Cancelled",
+};
+
+const formatTime = (time) => {
+  if (!time || !time.includes(":")) return time || "—";
+  const [h, m] = time.split(":");
+  const hour = parseInt(h, 10);
+  return `${hour % 12 || 12}:${m} ${hour >= 12 ? "PM" : "AM"}`;
+};
+
+const formatDate = (date) => {
+  if (!date) return "—";
+  // "YYYY-MM-DD" is parsed as UTC by Date; build it as a local date instead
+  const [y, mo, d] = date.split("-").map(Number);
+  const local = y && mo && d ? new Date(y, mo - 1, d) : new Date(date);
+  return local.toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+};
+
+const toLocalDate = (date) => {
+  const [y, m, d] = (date || "").split("-").map(Number);
+  return y ? new Date(y, m - 1, d) : null;
+};
+
+// Listings waiting for review or sent back by an admin, so nothing gets forgotten
+function ListingsPanel({ listings }) {
+  const by = (status) => listings.filter((p) => p.status === status);
+  const pending = by("pending");
+  const rejected = by("rejected");
+  const attention = [...rejected, ...pending];
+
+  return (
+    <section className="listingsPanel">
+      <div className="panelHead">
+        <h2>Your listings</h2>
+        <Link to="/profile" className="btn-link">
+          Manage all
+        </Link>
+      </div>
+      <p className="counts">
+        <span>
+          <strong>{by("approved").length}</strong> published
+        </span>
+        <span>
+          <strong>{pending.length}</strong> waiting for review
+        </span>
+        <span>
+          <strong>{rejected.length}</strong> need changes
+        </span>
+      </p>
+
+      {listings.length === 0 ? (
+        <p className="allGood">
+          You haven&rsquo;t posted anything yet.{" "}
+          <Link to="/add" className="btn-link">
+            Create your first listing
+          </Link>
+        </p>
+      ) : attention.length === 0 ? (
+        <p className="allGood">All your listings are live.</p>
+      ) : (
+        attention.map((p) => (
+          <div className="listingRow" key={p.id}>
+            {p.images?.[0] ? (
+              <img src={p.images[0]} alt="" />
+            ) : (
+              <span className="thumb" />
+            )}
+            <div className="info">
+              <Link to={`/${p.id}`}>{p.title}</Link>
+              {p.status === "rejected" && p.reviewNote ? (
+                <span className="note">{p.reviewNote}</span>
+              ) : (
+                <span>
+                  Submitted{" "}
+                  {new Date(p.createdAt).toLocaleDateString("en-GB", {
+                    day: "numeric",
+                    month: "short",
+                  })}
+                  {" · "}usually reviewed within a day
+                </span>
+              )}
+            </div>
+            <span className={`pill pill-${p.status}`}>
+              {p.status === "rejected" ? "Needs changes" : "In review"}
+            </span>
+            {p.status === "rejected" ? (
+              <Link to={`/edit-post/${p.id}`} className="btn btn-dark btn-sm">
+                Edit
+              </Link>
+            ) : (
+              <span />
+            )}
+          </div>
+        ))
+      )}
+    </section>
+  );
+}
+
+export default function AgencyDashboard() {
+  const { currentUser } = useContext(AuthContext);
+  const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [tab, setTab] = useState("all");
   const [dateFilter, setDateFilter] = useState("");
   const [error, setError] = useState("");
-  const [popupMessage, setPopupMessage] = useState("");
-  const [showDeclineModal, setShowDeclineModal] = useState(false);
+  const [toast, setToast] = useState("");
+  const [declining, setDeclining] = useState(null);
   const [declineReason, setDeclineReason] = useState("");
-  const [selectedDeclineId, setSelectedDeclineId] = useState(null);
-  const [confirmCompleteId, setConfirmCompleteId] = useState(null);
+  const [completing, setCompleting] = useState(null);
+  const [busyId, setBusyId] = useState(null);
+  const [listings, setListings] = useState(null);
+
+  // Agency owners and their agents both handle tour requests for their listings
+  const isAgency = ["agency", "agent"].includes(currentUser?.role);
 
   useEffect(() => {
-    fetchTourRequests();
-  }, []);
-
-  const fetchTourRequests = async () => {
-    try {
-      const response = await apiRequest.get("/tours/agency");
-      setTourRequests(response.data);
-    } catch (err) {
-      console.error(err);
-      setError("Failed to load tour requests");
-    } finally {
+    if (!isAgency) {
       setLoading(false);
+      return;
     }
+    apiRequest
+      .get("/tours/agency")
+      .then((res) => setRequests(res.data))
+      .catch(() => setError("We couldn't load your tour requests."))
+      .finally(() => setLoading(false));
+    apiRequest
+      .get("/users/profilePosts")
+      .then((res) => setListings(res.data.userPosts || []))
+      .catch(() => setListings([]));
+  }, [isAgency]);
+
+  const showToast = (message) => {
+    setToast(message);
+    setTimeout(() => setToast(""), 3500);
   };
 
-  const showPopup = (message) => {
-    setPopupMessage(message);
-    setTimeout(() => setPopupMessage(""), 4000);
-  };
-
-  const handleUpdateRequest = async (requestId, updateData) => {
+  const update = async (id, data, message) => {
+    setBusyId(id);
     try {
-      const response = await apiRequest.put(`/tours/${requestId}`, updateData);
-
-      setTourRequests((prev) =>
-        prev.map((request) =>
-          request.id === requestId ? response.data : request
-        )
-      );
-
-      showPopup("Tour request updated successfully.");
+      const res = await apiRequest.put(`/tours/${id}`, data);
+      setRequests((prev) => prev.map((r) => (r.id === id ? res.data : r)));
+      showToast(message);
     } catch (err) {
-      console.error(err);
-      showPopup("Failed to update tour request.");
+      showToast(err?.response?.data?.message || "Couldn't update the request.");
+    } finally {
+      setBusyId(null);
     }
   };
 
-  const handleAcceptRequest = (request) => {
-    handleUpdateRequest(request.id, {
-      status: "confirmed",
-      confirmedDate: request.preferredDate,
-      confirmedTime: request.preferredTime,
-    });
-  };
+  const accept = (r) =>
+    update(
+      r.id,
+      {
+        status: "confirmed",
+        confirmedDate: r.preferredDate,
+        confirmedTime: r.preferredTime,
+      },
+      "Tour confirmed."
+    );
 
-  const handleDeclineRequest = (requestId) => {
-    setSelectedDeclineId(requestId);
-    setShowDeclineModal(true);
-  };
-
-  const submitDeclineReason = () => {
-    if (declineReason.trim()) {
-      handleUpdateRequest(selectedDeclineId, {
-        status: "declined",
-        declineReason,
-      });
-      setDeclineReason("");
-      setSelectedDeclineId(null);
-      setShowDeclineModal(false);
-    } else {
-      showPopup("Please enter a decline reason.");
-    }
-  };
-
-  const handleCompleteRequest = (requestId) => {
-    setConfirmCompleteId(requestId);
+  const submitDecline = () => {
+    if (!declineReason.trim()) return;
+    update(
+      declining,
+      { status: "declined", declineReason: declineReason.trim() },
+      "Request declined."
+    );
+    setDeclining(null);
+    setDeclineReason("");
   };
 
   const confirmComplete = () => {
-    handleUpdateRequest(confirmCompleteId, {
-      status: "completed",
-    });
-    setConfirmCompleteId(null);
+    update(completing, { status: "completed" }, "Marked as completed.");
+    setCompleting(null);
   };
 
-  const cancelComplete = () => {
-    setConfirmCompleteId(null);
-  };
-
-  const filteredRequests = tourRequests.filter((request) => {
-    if (statusFilter !== "all" && request.status !== statusFilter) return false;
-    if (dateFilter && request.preferredDate !== dateFilter) return false;
-    return true;
-  });
-
-  const stats = {
-    pending: tourRequests.filter((r) => r.status === "pending").length,
-    confirmed: tourRequests.filter((r) => r.status === "confirmed").length,
-    thisWeek: tourRequests.filter((r) => {
-      const requestDate = new Date(r.preferredDate);
-      const now = new Date();
-      const weekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-      return requestDate >= now && requestDate <= weekFromNow;
-    }).length,
-    declined: tourRequests.filter((r) => r.status === "declined").length,
-  };
-
-  const getStatusClass = (status) => {
-    switch (status) {
-      case "pending":
-        return "status-pending";
-      case "confirmed":
-        return "status-confirmed";
-      case "declined":
-        return "status-declined";
-      case "completed":
-        return "status-completed";
-      default:
-        return "status-default";
-    }
-  };
-
-  const formatTime = (time) => {
-    const [hours, minutes] = time.split(":");
-    const hour = parseInt(hours);
-    const ampm = hour >= 12 ? "PM" : "AM";
-    const displayHour = hour % 12 || 12;
-    return `${displayHour}:${minutes} ${ampm}`;
-  };
-
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
-
-  if (loading) {
+  if (!isAgency) {
     return (
       <div className="agency-dashboard">
-        <div className="loading">Loading tour requests...</div>
+        <div className="empty-state">
+          <h3>This dashboard is for agencies</h3>
+          <p>Apply as an agency to receive and manage tour requests.</p>
+          <Link to="/agency" className="btn btn-dark">
+            Apply as an agency
+          </Link>
+        </div>
       </div>
     );
   }
 
+  const count = (status) => requests.filter((r) => r.status === status).length;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const weekAhead = new Date(today.getTime() + 7 * 864e5);
+  const thisWeek = requests.filter((r) => {
+    const d = toLocalDate(r.confirmedDate || r.preferredDate);
+    return (
+      ["pending", "confirmed"].includes(r.status) &&
+      d &&
+      d >= today &&
+      d <= weekAhead
+    );
+  }).length;
+
+  const filtered = requests.filter(
+    (r) =>
+      (tab === "all" || r.status === tab) &&
+      (!dateFilter || r.preferredDate === dateFilter)
+  );
+
   return (
     <div className="agency-dashboard">
-      <div className="dashboard-header">
-        <h1>Tour Requests Dashboard</h1>
-        <p>Manage tour requests for your properties</p>
-      </div>
+      <header className="dash-head">
+        <div>
+          <h1>Welcome back, {currentUser.agency?.tradeName || currentUser.agencyName || currentUser.username}</h1>
+          <p>Here&rsquo;s what&rsquo;s happening with your listings and tour requests.</p>
+        </div>
+        <Link to="/add" className="btn btn-outline btn-sm">
+          Create a listing
+        </Link>
+      </header>
 
-      {error && <div className="error-message">{error}</div>}
-      {popupMessage && <div className="popup-message">{popupMessage}</div>}
+      <section className="stats">
+        <div>
+          <strong>{count("pending")}</strong>
+          <span>Awaiting your reply</span>
+        </div>
+        <div>
+          <strong>{thisWeek}</strong>
+          <span>Visits in the next 7 days</span>
+        </div>
+        <div>
+          <strong>{count("confirmed")}</strong>
+          <span>Confirmed</span>
+        </div>
+        <div>
+          <strong>{count("completed")}</strong>
+          <span>Completed</span>
+        </div>
+      </section>
 
-      <div className="stats-grid">
-        <div className="stat-card pending">
-          <div className="stat-icon">🕐</div>
-          <div className="stat-content">
-            <h3>{stats.pending}</h3>
-            <p>Pending</p>
+      {currentUser.agencyId && <AgencyTeam onLeft={() => window.location.assign("/profile")} />}
+
+      {listings && <ListingsPanel listings={listings} />}
+
+      <section className="requests">
+        <h2 className="sectionTitle">Tour requests</h2>
+        <div className="toolbar">
+          <nav className="tabs" role="tablist">
+            {TABS.map(([value, label]) => {
+              const n = value === "all" ? requests.length : count(value);
+              return (
+                <button
+                  key={value}
+                  role="tab"
+                  aria-selected={tab === value}
+                  className={tab === value ? "active" : ""}
+                  onClick={() => setTab(value)}
+                >
+                  {label}
+                  {n > 0 && <span className="n">{n}</span>}
+                </button>
+              );
+            })}
+          </nav>
+          <div className="dateFilter">
+            <input
+              type="date"
+              aria-label="Filter by date"
+              value={dateFilter}
+              onChange={(e) => setDateFilter(e.target.value)}
+            />
+            {dateFilter && (
+              <button className="btn-link" onClick={() => setDateFilter("")}>
+                Clear
+              </button>
+            )}
           </div>
         </div>
-        <div className="stat-card confirmed">
-          <div className="stat-icon">✅</div>
-          <div className="stat-content">
-            <h3>{stats.confirmed}</h3>
-            <p>Confirmed</p>
-          </div>
-        </div>
-        <div className="stat-card thisweek">
-          <div className="stat-icon">📅</div>
-          <div className="stat-content">
-            <h3>{stats.thisWeek}</h3>
-            <p>This Week</p>
-          </div>
-        </div>
-        <div className="stat-card declined">
-          <div className="stat-icon">❌</div>
-          <div className="stat-content">
-            <h3>{stats.declined}</h3>
-            <p>Declined</p>
-          </div>
-        </div>
-      </div>
 
-      <div className="filters">
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-        >
-          <option value="all">All Status</option>
-          <option value="pending">Pending</option>
-          <option value="confirmed">Confirmed</option>
-          <option value="completed">Completed</option>
-          <option value="declined">Declined</option>
-        </select>
-        <input
-          type="date"
-          value={dateFilter}
-          onChange={(e) => setDateFilter(e.target.value)}
-        />
-      </div>
+        {error && <p className="error-text">{error}</p>}
 
-      <div className="requests-container">
-        <h2>Recent Tour Requests</h2>
-
-        {filteredRequests.length === 0 ? (
-          <div className="no-requests">
-            <div className="no-requests-icon">📅</div>
-            <h3>No tour requests</h3>
+        {loading ? (
+          <div className="rows">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="row skeleton" />
+            ))}
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="none">
+            <h3>
+              {requests.length === 0
+                ? "You don't have any tour requests yet"
+                : "Nothing here"}
+            </h3>
             <p>
-              {statusFilter !== "all" || dateFilter
-                ? "No tour requests match your current filters."
-                : "You haven't received any tour requests yet."}
+              {requests.length === 0
+                ? "When someone books a visit on one of your listings, it will show up here."
+                : "No requests match this filter."}
             </p>
           </div>
         ) : (
-          <div className="requests-list">
-            {filteredRequests.map((request) => (
-              <div key={request.id} className="request-card">
-                <div className="request-header">
-                  <div className="client-info">
-                    <div className="client-avatar">
-                      {request.client?.username?.charAt(0).toUpperCase() || "U"}
-                    </div>
-                    <div className="client-details">
-                      <h4>{request.client?.username || "Unknown Client"}</h4>
-                      <p>{request.client?.email || "No email provided"}</p>
-                    </div>
-                    <div
-                      className={`status-badge ${getStatusClass(
-                        request.status
-                      )}`}
+          <ul className="rows">
+            {filtered.map((r) => (
+              <li key={r.id} className="row">
+                <div className="who">
+                  <span className="avatar">
+                    {r.client?.username?.charAt(0).toUpperCase() || "?"}
+                  </span>
+                  <div>
+                    <strong>{r.client?.username || "Unknown client"}</strong>
+                    {r.property ? (
+                      <Link to={`/${r.property.id}`} className="prop">
+                        {r.property.title}
+                      </Link>
+                    ) : (
+                      <span className="prop">Listing removed</span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="when">
+                  <span>
+                    <CalendarDays size={15} />
+                    {formatDate(r.confirmedDate || r.preferredDate)}
+                  </span>
+                  <span>
+                    <Clock size={15} />
+                    {formatTime(r.confirmedTime || r.preferredTime)}
+                  </span>
+                </div>
+
+                <div className="contact">
+                  {r.contactPhone && (
+                    <a href={`tel:${r.contactPhone}`}>
+                      <Phone size={15} />
+                      {r.contactPhone}
+                    </a>
+                  )}
+                  {r.client?.email && (
+                    <a href={`mailto:${r.client.email}`}>
+                      <Mail size={15} />
+                      {r.client.email}
+                    </a>
+                  )}
+                </div>
+
+                <span className={`pill pill-${r.status}`}>
+                  {STATUS_LABEL[r.status] || r.status}
+                </span>
+
+                <div className="actions">
+                  {r.status === "pending" && (
+                    <>
+                      <button
+                        className="btn btn-outline btn-sm"
+                        disabled={busyId === r.id}
+                        onClick={() => setDeclining(r.id)}
+                      >
+                        Decline
+                      </button>
+                      <button
+                        className="btn btn-dark btn-sm"
+                        disabled={busyId === r.id}
+                        onClick={() => accept(r)}
+                      >
+                        Accept
+                      </button>
+                    </>
+                  )}
+                  {r.status === "confirmed" && (
+                    <button
+                      className="btn btn-outline btn-sm"
+                      disabled={busyId === r.id}
+                      onClick={() => setCompleting(r.id)}
                     >
-                      {request.status.toUpperCase()}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="request-content">
-                  <h5>{request.property?.title || "Property"}</h5>
-                  {request.message && (
-                    <p className="request-message">{request.message}</p>
-                  )}
-                  <div className="request-details">
-                    <div className="detail-item">
-                      <span className="icon">📅</span>
-                      <span>{formatDate(request.preferredDate)}</span>
-                    </div>
-                    <div className="detail-item">
-                      <span className="icon">🕐</span>
-                      <span>{formatTime(request.preferredTime)}</span>
-                    </div>
-                    <div className="detail-item">
-                      <span className="icon">📞</span>
-                      <span>{request.contactPhone}</span>
-                    </div>
-                  </div>
-                  {request.status === "confirmed" && request.confirmedDate && (
-                    <div className="confirmation-info">
-                      <strong>Confirmed for:</strong>{" "}
-                      {formatDate(request.confirmedDate)} at{" "}
-                      {formatTime(request.confirmedTime)}
-                    </div>
-                  )}
-                  {request.status === "declined" && request.declineReason && (
-                    <div className="decline-info">
-                      <strong>Decline reason:</strong> {request.declineReason}
-                    </div>
-                  )}
-                </div>
-
-                <div className="request-actions">
-                  {request.status === "pending" && (
-                    <>
-                      <button
-                        className="accept-btn"
-                        onClick={() => handleAcceptRequest(request)}
-                      >
-                        ✅ Accept
-                      </button>
-                      <button
-                        className="decline-btn"
-                        onClick={() => handleDeclineRequest(request.id)}
-                      >
-                        ❌ Decline
-                      </button>
-                    </>
-                  )}
-                  {request.status === "confirmed" && (
-                    <>
-                      <button className="contact-btn">📞 Contact</button>
-                      <button
-                        className="complete-btn"
-                        onClick={() => handleCompleteRequest(request.id)}
-                      >
-                        ✅ Complete
-                      </button>
-                    </>
-                  )}
-                  {(request.status === "completed" ||
-                    request.status === "declined") && (
-                    <button className="disabled-btn" disabled>
-                      {request.status === "completed"
-                        ? "✅ Completed"
-                        : "❌ Declined"}
+                      Mark completed
                     </button>
                   )}
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
 
-      {showDeclineModal && (
-        <div className="modal">
-          <div className="modal-content">
-            <h3>Decline Tour Request</h3>
+                {(r.message || (r.status === "declined" && r.declineReason)) && (
+                  <div className="notes">
+                    {r.message && <p>&ldquo;{r.message}&rdquo;</p>}
+                    {r.status === "declined" && r.declineReason && (
+                      <p className="reason">
+                        Declined: {r.declineReason}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      {declining && (
+        <div className="modal" role="dialog" aria-modal="true" onClick={() => setDeclining(null)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>Decline this request?</h3>
+            <p>Let the guest know why. They&rsquo;ll see this message.</p>
             <textarea
-              placeholder="Enter reason for declining..."
+              autoFocus
+              placeholder="e.g. The property is no longer available on that day."
               value={declineReason}
               onChange={(e) => setDeclineReason(e.target.value)}
             />
             <div className="modal-actions">
-              <button className="btn btn-submit" onClick={submitDeclineReason}>
-                📨 Submit
+              <button className="btn-link" onClick={() => setDeclining(null)}>
+                Cancel
               </button>
               <button
-                className="btn btn-cancel"
-                onClick={() => setShowDeclineModal(false)}
+                className="btn btn-dark"
+                disabled={!declineReason.trim()}
+                onClick={submitDecline}
               >
-                ❌ Cancel
+                Decline request
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {confirmCompleteId && (
-        <div className="modal">
-          <div className="modal-content">
-            <h3>Mark as Completed?</h3>
-            <p>Are you sure you want to mark this tour request as completed?</p>
+      {completing && (
+        <div className="modal" role="dialog" aria-modal="true" onClick={() => setCompleting(null)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>Mark this visit as completed?</h3>
+            <p>Do this once the tour has taken place.</p>
             <div className="modal-actions">
-              <button className="btn btn-confirm" onClick={confirmComplete}>
-                ✅ Yes
+              <button className="btn-link" onClick={() => setCompleting(null)}>
+                Cancel
               </button>
-              <button className="btn btn-cancel" onClick={cancelComplete}>
-                ❌ No
+              <button className="btn btn-dark" onClick={confirmComplete}>
+                Mark completed
               </button>
             </div>
           </div>
         </div>
       )}
+
+      {toast && <div className="toast">{toast}</div>}
     </div>
   );
 }

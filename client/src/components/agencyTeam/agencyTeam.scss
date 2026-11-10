@@ -1,0 +1,194 @@
+@use "../../responsive.scss" as *;
+
+.agencyTeam {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+
+  @include xs {
+    padding: 18px 16px;
+  }
+
+  .muted {
+    color: var(--muted);
+  }
+
+  .teamHead {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    img {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius);
+      object-fit: contain;
+      border: 1px solid var(--border);
+    }
+    h2 {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 0;
+
+      svg {
+        color: var(--info);
+      }
+    }
+  }
+
+  h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 6px;
+  }
+
+  .teamNotice {
+    padding: 12px 14px;
+    border-radius: var(--radius);
+    background: var(--danger-soft);
+    color: var(--danger);
+  }
+
+  .members,
+  .teamPosts {
+    list-style: none;
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+    img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    div {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+
+      span {
+        font-size: 13px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+    select {
+      height: 34px;
+      padding: 0 8px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      background: #fff;
+    }
+  }
+
+  .teamPosts img {
+    border-radius: var(--radius-sm);
+    width: 48px;
+    height: 48px;
+  }
+  .teamPosts a {
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .rolePill {
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: var(--surface-2);
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+
+    &.st-approved {
+      background: var(--success-soft);
+      color: var(--success);
+    }
+    &.st-pending {
+      background: var(--warning-soft);
+      color: var(--warning);
+    }
+    &.st-rejected,
+    &.st-unpublished {
+      background: var(--danger-soft);
+      color: var(--danger);
+    }
+  }
+
+  .iconBtn {
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border: none;
+    border-radius: 50%;
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+
+    &:hover {
+      background: var(--surface-2);
+      color: var(--danger);
+    }
+  }
+
+  .addMember {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    label {
+      font-weight: 600;
+      font-size: 14px;
+    }
+    p {
+      font-size: 13px;
+    }
+  }
+  .addRow {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+
+    input {
+      flex: 1;
+      min-width: 200px;
+      height: 40px;
+      padding: 0 12px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+    }
+    select {
+      height: 40px;
+      padding: 0 8px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      background: #fff;
+    }
+  }
+
+  .okText {
+    color: var(--success);
+    font-size: 14px;
+  }
+
+  .spin {
+    animation: spin 0.9s linear infinite;
+  }
+}

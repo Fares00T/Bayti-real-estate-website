@@ -1,27 +1,18 @@
 import { useState, useEffect } from "react";
-import {
-  Box,
-  Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-} from "@mui/material";
-import { Link } from "react-router-dom";
-
-const types = ["buy", "rent"];
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { Search } from "lucide-react";
+import "./searchBar.scss";
 
 function SearchBar() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [cities, setCities] = useState([]);
-  const [districts, setDistricts] = useState([]);
-
   const [query, setQuery] = useState({
-    type: "buy",
-    city: "",
-    district: "",
-    minPrice: "",
-    maxPrice: "",
+    type: searchParams.get("type") || "buy",
+    city: searchParams.get("city") || "",
+    district: searchParams.get("district") || "",
+    minPrice: searchParams.get("minPrice") || "",
+    maxPrice: searchParams.get("maxPrice") || "",
   });
 
   useEffect(() => {
@@ -31,121 +22,91 @@ function SearchBar() {
       .catch((err) => console.error("Error loading cities:", err));
   }, []);
 
-  useEffect(() => {
-    const selectedCity = cities.find((c) => c.name === query.city);
-    setDistricts(selectedCity ? selectedCity.dairats : []);
-    setQuery((prev) => ({ ...prev, district: "" }));
-  }, [query.city, cities]);
+  const districts = cities.find((c) => c.name === query.city)?.dairats || [];
 
   const handleChange = (e) => {
-    setQuery((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setQuery((prev) => ({
+      ...prev,
+      [name]: value,
+      // a new city invalidates the chosen district
+      ...(name === "city" ? { district: "" } : {}),
+    }));
   };
 
-  const switchType = (val) => {
-    setQuery((prev) => ({ ...prev, type: val }));
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const params = new URLSearchParams(
+      Object.entries(query).filter(([, v]) => v !== "")
+    );
+    navigate(`/list?${params.toString()}`);
   };
 
   return (
-    <Box sx={{ p: 2, border: "1px solid #ccc", borderRadius: 2 }}>
-      <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
-        {types.map((type) => (
-          <Button
-            key={type}
-            variant={query.type === type ? "contained" : "outlined"}
-            onClick={() => switchType(type)}
-          >
-            {type}
-          </Button>
-        ))}
-      </Box>
-
-      <Box
-        component="form"
-        sx={{
-          display: "flex",
-          flexDirection: { xs: "row", sm: "column", md: "row" }, // Stack on small screens, row on larger
-          gap: 1,
-          flexWrap: "wrap",
-          justifyContent: "space-between", // Ensures the fields are spaced out properly
-        }}
-        sm={{ flexDirection: "column" }} // Column layout on small screens
-        md={{ flexDirection: "column" }} // Row layout on medium and larger screens
-      >
-        {/* City */}
-        <FormControl fullWidth sx={{ flex: 1 }}>
-          <InputLabel>City</InputLabel>
-          <Select
-            name="city"
-            value={query.city}
-            onChange={handleChange}
-            label="City"
-          >
-            <MenuItem value="">Select City</MenuItem>
-            {cities.map((city) => (
-              <MenuItem key={city.mattricule} value={city.name}>
-                {city.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        {/* District */}
-        <FormControl fullWidth sx={{ flex: 1 }} disabled={!query.city}>
-          <InputLabel>District</InputLabel>
-          <Select
-            name="district"
-            value={query.district}
-            onChange={handleChange}
-            label="District"
-          >
-            <MenuItem value="">Select District</MenuItem>
-            {districts.map((district) => (
-              <MenuItem key={district.code} value={district.name}>
-                {district.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        {/* Min Price */}
-        <TextField
-          type="number"
-          name="minPrice"
-          label="Min Price"
-          value={query.minPrice}
+    <form className="searchBar" onSubmit={handleSubmit} role="search">
+      <label className="seg">
+        <span className="label">Looking to</span>
+        <select name="type" value={query.type} onChange={handleChange}>
+          <option value="buy">Buy</option>
+          <option value="rent">Rent</option>
+        </select>
+      </label>
+      <label className="seg">
+        <span className="label">Wilaya</span>
+        <select name="city" value={query.city} onChange={handleChange}>
+          <option value="">Search destinations</option>
+          {cities.map((city) => (
+            <option key={city.mattricule} value={city.name}>
+              {city.name}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label className={`seg ${!query.city ? "disabled" : ""}`}>
+        <span className="label">District</span>
+        <select
+          name="district"
+          value={query.district}
           onChange={handleChange}
-          inputProps={{ min: 0 }}
-          fullWidth
-          sx={{ flex: 1 }}
-        />
-
-        {/* Max Price */}
-        <TextField
-          type="number"
-          name="maxPrice"
-          label="Max Price"
-          value={query.maxPrice}
-          onChange={handleChange}
-          inputProps={{ min: 0 }}
-          fullWidth
-          sx={{ flex: 1 }}
-        />
-
-        {/* Search Button */}
-        <Link
-          to={`/list?type=${query.type}&city=${query.city}&district=${query.district}&minPrice=${query.minPrice}&maxPrice=${query.maxPrice}`}
-          style={{ textDecoration: "none" }}
+          disabled={!query.city}
         >
-          <Button
-            variant="contained"
-            color="warning"
-            sx={{ height: "100%", width: "100%" }}
-          >
-            Search
-          </Button>
-        </Link>
-      </Box>
-    </Box>
+          <option value="">{query.city ? "Any district" : "Pick a wilaya first"}</option>
+          {districts.map((d) => (
+            <option key={d.code} value={d.name}>
+              {d.name}
+            </option>
+          ))}
+        </select>
+      </label>
+      <div className="seg price">
+        <span className="label">Budget (DZD)</span>
+        <div className="range">
+          <input
+            type="number"
+            name="minPrice"
+            min={0}
+            placeholder="Min"
+            aria-label="Minimum price"
+            value={query.minPrice}
+            onChange={handleChange}
+          />
+          <span>–</span>
+          <input
+            type="number"
+            name="maxPrice"
+            min={0}
+            placeholder="Max"
+            aria-label="Maximum price"
+            value={query.maxPrice}
+            onChange={handleChange}
+          />
+        </div>
+      </div>
+      <button type="submit" className="go" aria-label="Search">
+        <Search size={16} strokeWidth={3} />
+        <span>Search</span>
+      </button>
+    </form>
   );
 }
 

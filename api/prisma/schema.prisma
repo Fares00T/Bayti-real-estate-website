@@ -8,16 +8,22 @@ datasource db {
 }
 
 model User {
-  id         Int         @id @default(autoincrement())  // Use Int for IDs with auto increment
-  email      String      @unique
-  username   String      @unique
-  password   String
-  avatar     String?
-  role       Role        @default(client)
-  createdAt  DateTime    @default(now())  
-  posts      Post[]      // Relation to Post model
-  savedPosts SavedPost[] // Relation to SavedPost model
-  chats      ChatUser[]  // Join table for many-to-many relation with Chat
+  id          Int         @id @default(autoincrement()) // Use Int for IDs with auto increment
+  email       String      @unique
+  username    String      @unique
+  password    String
+  avatar      String?
+  role        Role        @default(client)
+  // Which platform the account was opened for: a marketplace account, or an
+  // agency account (registered as an agency; signs in on the agency platform
+  // only, first to follow its application, then as the agency's owner)
+  accountType AccountType @default(individual)
+  createdAt   DateTime    @default(now())
+  // listings this account is responsible for: an individual's own, or the
+  // agency listings assigned to this agent
+  posts       Post[]
+  savedPosts  SavedPost[] // Relation to SavedPost model
+  chats       ChatUser[] // Join table for many-to-many relation with Chat
 
   // 👇 Add these agency-specific fields
   agencyName String?
@@ -26,37 +32,124 @@ model User {
   website    String?
   about      String?
 
-  tourRequestsAsClient TourRequest[] @relation("ClientTourRequests")
-  tourRequestsAsAgency TourRequest[] @relation("AgencyTourRequests")
+  inquiries         Inquiry[] @relation("InquiryClient")
+  inquiriesReceived Inquiry[] @relation("InquiryOwner")
+  inquiriesAssigned Inquiry[] @relation("InquiryAssignee")
+  postsCreated      Post[]    @relation("PostCreator")
+
+  // Account state managed from the admin dashboard
+  status            UserStatus @default(active)
+  statusReason      String?    @db.Text
+  verified          Boolean    @default(false)
+  lastLoginAt       DateTime?
+  // Sessions issued before this are refused (password change or reset)
+  passwordChangedAt DateTime?
+  updatedAt         DateTime   @default(now()) @updatedAt
+
+  // Agency membership: the owner, managers and agents all point at the agency
+  agencyId        Int?
+  agency          Agency?            @relation("AgencyMembers", fields: [agencyId], references: [id], onDelete: SetNull)
+  agencyRole      AgencyRole?
+  // The agency can switch a member off without touching their Bayti account
+  agencyActive    Boolean            @default(true)
+  ownedAgency     Agency?            @relation("AgencyOwner")
+  invitations     AgencyInvitation[] @relation("InvitationsReceived")
+  invitationsSent AgencyInvitation[] @relation("InvitationsSent")
+
+  applications      AgencyApplication[]  @relation("ApplicantApplications")
+  applicationEvents ApplicationEvent[]
+  applicationNotes  ApplicationNote[]
+  documents         Document[]           @relation("UserDocuments")
+  notifications     Notification[]
+  auditLogs         AuditLog[]
+  reportsFiled      Report[]             @relation("ReportsFiled")
+  reportsAgainst    Report[]             @relation("ReportsAgainst")
+  resetTokens       PasswordResetToken[]
 }
 
+// Staff role only. Buying, renting and publishing are capabilities of every
+// account; agency membership lives in agencyId / agencyRole.
 enum Role {
   client
-  agency
   admin
 }
 
+enum AccountType {
+  individual
+  agency
+}
+
+enum UserStatus {
+  active
+  suspended
+  deactivated
+}
+
+enum AgencyRole {
+  owner
+  manager
+  agent
+}
+
 model Post {
-  id         Int         @id @default(autoincrement())
-  title      String
-  price      Int
-  images     Json        // Store image URLs as a JSON array
-  address    String
-  city       String
-  district   String
-  bedroom    Int
-  bathroom   Int
-  latitude   String
-  longitude  String
-  type       Type
-  property   Property
-  propertyType PropertyType
-  createdAt  DateTime    @default(now())
-  user       User        @relation(fields: [userId], references: [id])
-  userId     Int
-  postDetail PostDetail?
-  savedPosts SavedPost[] // Relation to SavedPost model
-  tourRequests TourRequest[]
+  id            Int          @id @default(autoincrement())
+  title         String
+  price         Int
+  images        Json // Store image URLs as a JSON array
+  address       String
+  city          String
+  district      String
+  bedroom       Int
+  bathroom      Int
+  latitude      String
+  longitude     String
+  type          Type
+  property      Property
+  propertyType  PropertyType
+  status        PostStatus   @default(pending)
+  reviewNote    String?      @db.Text
+  reviewedAt    DateTime?
+  availability  Availability @default(available)
+  // Taken offline by whoever lists it; the moderation status is left untouched
+  hiddenByOwner Boolean      @default(false)
+  featured      Boolean      @default(false)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @default(now()) @updatedAt
+  // Ownership: an agency listing belongs to the agency (agencyId); otherwise
+  // to the individual in userId.
+  agencyId      Int?
+  agency        Agency?      @relation(fields: [agencyId], references: [id], onDelete: SetNull)
+  // Responsible account: the individual owner, or the assigned agent of an
+  // agency listing (null = unassigned, handled by the agency's leads)
+  userId        Int?
+  user          User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  // Who published it; never changes
+  createdById   Int?
+  createdBy     User?        @relation("PostCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  reports       Report[]
+  postDetail    PostDetail?
+  savedPosts    SavedPost[]
+  inquiries     Inquiry[]
+  viewLog       PostView[]
+
+  @@index([agencyId, status])
+  @@index([userId, status])
+}
+
+// Listings are hidden from the public until an admin approves them
+enum PostStatus {
+  pending
+  approved
+  rejected
+  unpublished // taken offline by the team, can be republished
+  archived // kept for the record, no longer on the market
+}
+
+enum Availability {
+  available
+  under_offer
+  sold
+  rented
 }
 
 enum Type {
@@ -83,30 +176,41 @@ enum PropertyType {
   other_residential
 }
 
-
 model PostDetail {
-  id         Int     @id @default(autoincrement())
-  desc       String
-  utilities  String?
-  pet        String?
-  size       Int?
-  Furnished  String?
-  post       Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
-  postId     Int     @unique
-  views      Int         @default(0) // 👈 Add this line
-  Matricule  String?
-  
-    // New Nearby Facilities
-  primarySchool     String?
-  kindergarten      String?
-  university        String?
-  carPark           String?
-  transportation    String?
-  highSchool        String?
-  middleSchool      String?
-  mosque            String?
-  pharmacy          String?
-  commercialArea        String?
+  id        Int     @id @default(autoincrement())
+  desc      String  @db.Text
+  utilities String?
+  pet       String?
+  size      Int?
+  Furnished String?
+  post      Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    Int     @unique
+  views     Int     @default(0) // 👈 Add this line
+  Matricule String?
+
+  // New Nearby Facilities
+  primarySchool  String?
+  kindergarten   String?
+  university     String?
+  carPark        String?
+  transportation String?
+  highSchool     String?
+  middleSchool   String?
+  mosque         String?
+  pharmacy       String?
+  commercialArea String?
+}
+
+// One row per viewer per listing per day; the unique key makes counting idempotent
+model PostView {
+  id        Int      @id @default(autoincrement())
+  postId    Int
+  viewerKey String   @db.VarChar(80)
+  day       Int // days since the Unix epoch (UTC)
+  createdAt DateTime @default(now())
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, viewerKey, day])
 }
 
 model SavedPost {
@@ -122,57 +226,390 @@ model SavedPost {
 
 // Many-to-many join table for users and chats
 model Chat {
-  id         Int         @id @default(autoincrement())  // Use Int for ID with auto increment
-  createdAt  DateTime    @default(now())
-  lastMessage String?
-  messages   Message[]   // Relation to Message model
-  users      ChatUser[]  // Join table for users
+  id          Int        @id @default(autoincrement()) // Use Int for ID with auto increment
+  createdAt   DateTime   @default(now())
+  lastMessage String?    @db.Text
+  messages    Message[]
+  users       ChatUser[]
+  // Conversations about a property hang off an inquiry; older ones are
+  // plain person-to-person chats
+  inquiry     Inquiry?
 }
 
 model ChatUser {
-  chatId Int
-  userId Int
-  chat   Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chatId     Int
+  userId     Int
+  // Everything the other person sent after this is unread for this user
+  lastReadAt DateTime?
+  chat       Chat      @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([chatId, userId])
 }
 
-
 model Message {
-  id        Int     @id @default(autoincrement())
-  text      String
+  id        Int      @id @default(autoincrement())
+  text      String   @db.Text
   userId    Int
   chatId    Int
-  chat      Chat    @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
+
+  // polling asks for "messages in this chat after X"
+  @@index([chatId, createdAt])
 }
 
-model TourRequest {
-  id             Int               @id @default(autoincrement())
-  propertyId     Int
-  clientId       Int
-  agencyId       Int
-  preferredDate  String
-  preferredTime  String
-  contactPhone   String
-  message        String?
-  status         TourRequestStatus @default(pending)
-  confirmedDate  String?
-  confirmedTime  String?
-  declineReason  String?
-  createdAt      DateTime          @default(now())
-  updatedAt      DateTime          @updatedAt
+// A client's question or visit request about one property, routed from the
+// listing: agency listings go to the agency (and the assigned agent),
+// individual listings to their owner. One per client and property.
+model Inquiry {
+  id            Int           @id @default(autoincrement())
+  type          InquiryType   @default(question)
+  status        InquiryStatus @default(open)
+  clientId      Int
+  client        User          @relation("InquiryClient", fields: [clientId], references: [id], onDelete: Cascade)
+  postId        Int?
+  post          Post?         @relation(fields: [postId], references: [id], onDelete: SetNull)
+  // kept so the history still reads well if the listing is deleted
+  postTitle     String
+  agencyId      Int?
+  agency        Agency?       @relation(fields: [agencyId], references: [id], onDelete: SetNull)
+  ownerId       Int?
+  owner         User?         @relation("InquiryOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  assignedToId  Int?
+  assignedTo    User?         @relation("InquiryAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+  message       String?       @db.Text
+  contactPhone  String?       @db.VarChar(40)
+  preferredDate String?       @db.VarChar(20)
+  preferredTime String?       @db.VarChar(20)
+  confirmedDate String?       @db.VarChar(20)
+  confirmedTime String?       @db.VarChar(20)
+  declineReason String?       @db.Text
+  chatId        Int?          @unique
+  chat          Chat?         @relation(fields: [chatId], references: [id], onDelete: SetNull)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @default(now()) @updatedAt
 
-  property       Post  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
-  client         User  @relation("ClientTourRequests", fields: [clientId], references: [id], onDelete: Cascade)
-  agency         User  @relation("AgencyTourRequests", fields: [agencyId], references: [id], onDelete: Cascade)
+  @@unique([clientId, postId])
+  @@index([agencyId, status])
+  @@index([ownerId, status])
+  @@index([assignedToId, status])
 }
 
-enum TourRequestStatus {
-  pending
-  confirmed
+enum InquiryType {
+  question
+  visit
+}
+
+enum InquiryStatus {
+  open
+  scheduled // visit confirmed
+  closed
   declined
-  completed
-  cancelled
+  cancelled // by the client
+}
+
+// ---------- Agencies ----------
+
+// The live, verified record of an agency. Created when an application is
+// approved (or by an admin directly). The flat agency fields on User are kept
+// in sync so the public marketplace keeps working unchanged.
+model Agency {
+  id                 Int                @id @default(autoincrement())
+  ownerId            Int?               @unique
+  owner              User?              @relation("AgencyOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  entityType         EntityType         @default(legal_entity)
+  legalName          String
+  tradeName          String
+  legalForm          String?
+  rcNumber           String?
+  nif                String?
+  nis                String?
+  articleImposition  String?
+  address            String?
+  wilaya             String?
+  commune            String?
+  phone              String?
+  email              String?
+  website            String?
+  logo               String?
+  about              String?            @db.Text
+  repFullName        String?
+  repPosition        String?
+  repPhone           String?
+  repEmail           String?
+  approvalNumber     String?
+  approvalWilaya     String?
+  approvalIssueDate  DateTime?
+  approvalExpiryDate DateTime?
+  // Operational status and verification are separate decisions
+  status             AgencyStatus       @default(active)
+  statusReason       String?            @db.Text
+  verification       AgencyVerification @default(pending)
+  verificationNote   String?            @db.Text
+  verifiedAt         DateTime?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @default(now()) @updatedAt
+
+  members      User[]              @relation("AgencyMembers")
+  posts        Post[]
+  inquiries    Inquiry[]
+  invitations  AgencyInvitation[]
+  applications AgencyApplication[]
+  documents    Document[]
+}
+
+enum AgencyStatus {
+  active
+  suspended
+}
+
+// The badge shows only while verified, the agency is active and its
+// agrément hasn't expired (lib/agency.js isAgencyVerified)
+enum AgencyVerification {
+  pending
+  verified
+  revoked
+}
+
+// An agency asking an existing account to join. Nobody joins an agency
+// without accepting.
+model AgencyInvitation {
+  id          Int              @id @default(autoincrement())
+  agencyId    Int
+  agency      Agency           @relation(fields: [agencyId], references: [id], onDelete: Cascade)
+  userId      Int
+  user        User             @relation("InvitationsReceived", fields: [userId], references: [id], onDelete: Cascade)
+  agencyRole  AgencyRole       @default(agent)
+  status      InvitationStatus @default(pending)
+  invitedById Int?
+  invitedBy   User?            @relation("InvitationsSent", fields: [invitedById], references: [id], onDelete: SetNull)
+  expiresAt   DateTime
+  respondedAt DateTime?
+  createdAt   DateTime         @default(now())
+
+  @@index([userId, status])
+  @@index([agencyId, status])
+}
+
+enum InvitationStatus {
+  pending
+  accepted
+  declined
+  revoked
+}
+
+// Natural person (personne physique) or legal entity (personne morale)
+enum EntityType {
+  natural_person
+  legal_entity
+}
+
+model AgencyApplication {
+  id          Int               @id @default(autoincrement())
+  applicantId Int
+  applicant   User              @relation("ApplicantApplications", fields: [applicantId], references: [id], onDelete: Cascade)
+  agencyId    Int?
+  agency      Agency?           @relation(fields: [agencyId], references: [id], onDelete: SetNull)
+  status      ApplicationStatus @default(draft)
+  entityType  EntityType        @default(legal_entity)
+
+  // A. Agency
+  legalName         String?
+  tradeName         String?
+  legalForm         String?
+  rcNumber          String?
+  nif               String?
+  nis               String?
+  articleImposition String?
+  address           String?
+  wilaya            String?
+  commune           String?
+  phone             String?
+  email             String?
+  website           String?
+  logo              String?
+
+  // B. Legal representative / manager
+  repFullName    String?
+  repBirthDate   DateTime?
+  repNationality String?
+  repIdNumber    String?
+  repPhone       String?
+  repEmail       String?
+  repPosition    String?
+
+  // C. Professional authorization
+  approvalNumber      String?
+  approvalWilaya      String?
+  approvalIssueDate   DateTime?
+  approvalExpiryDate  DateTime?
+  qualifiedPersonName String? // holder of the qualification, if not the representative
+  qualification       String? // diploma or professional title relied on
+
+  message        String?   @db.Text // from the applicant
+  checklist      Json? // admin-only document verification ticks
+  requestMessage String?   @db.Text // what the team asked for (applicant sees it)
+  decisionNote   String?   @db.Text // shown to the applicant with the decision
+  submittedAt    DateTime?
+  reviewedAt     DateTime?
+  reviewerId     Int?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @default(now()) @updatedAt
+
+  events    ApplicationEvent[]
+  notes     ApplicationNote[]
+  documents Document[]
+
+  @@index([status])
+}
+
+enum ApplicationStatus {
+  draft
+  submitted
+  under_review
+  info_required
+  resubmitted
+  approved
+  rejected
+}
+
+// Every status change and upload, in order. `message` is visible to the applicant.
+model ApplicationEvent {
+  id            Int                @id @default(autoincrement())
+  applicationId Int
+  application   AgencyApplication  @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  type          String             @db.VarChar(40)
+  fromStatus    ApplicationStatus?
+  toStatus      ApplicationStatus?
+  message       String?            @db.Text
+  actorId       Int?
+  actor         User?              @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  createdAt     DateTime           @default(now())
+}
+
+// Internal notes: never sent to the applicant
+model ApplicationNote {
+  id            Int               @id @default(autoincrement())
+  applicationId Int
+  application   AgencyApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  authorId      Int?
+  author        User?             @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  body          String            @db.Text
+  createdAt     DateTime          @default(now())
+}
+
+// Private uploads (legal documents, report screenshots). Files live outside any
+// public path and are only streamed through authorized endpoints.
+model Document {
+  id            Int                @id @default(autoincrement())
+  kind          String             @db.VarChar(40)
+  originalName  String
+  mimeType      String             @db.VarChar(100)
+  size          Int
+  storageKey    String             @unique @db.VarChar(120)
+  sha256        String             @db.VarChar(64)
+  applicationId Int?
+  application   AgencyApplication? @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  agencyId      Int?
+  agency        Agency?            @relation(fields: [agencyId], references: [id], onDelete: SetNull)
+  reportId      Int?
+  report        Report?            @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  userId        Int?
+  user          User?              @relation("UserDocuments", fields: [userId], references: [id], onDelete: Cascade)
+  uploadedById  Int?
+  createdAt     DateTime           @default(now())
+}
+
+// ---------- Platform ----------
+
+model Notification {
+  id        Int                  @id @default(autoincrement())
+  audience  NotificationAudience
+  userId    Int?
+  user      User?                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String               @db.VarChar(50)
+  title     String
+  body      String?              @db.Text
+  link      String?
+  readAt    DateTime?
+  createdAt DateTime             @default(now())
+
+  @@index([audience, readAt])
+  @@index([userId, readAt])
+}
+
+// admin = the shared team inbox; user = one account's own notifications
+enum NotificationAudience {
+  admin
+  user
+}
+
+model AuditLog {
+  id         Int      @id @default(autoincrement())
+  actorId    Int?
+  actor      User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  action     String   @db.VarChar(60)
+  entityType String   @db.VarChar(40)
+  entityId   Int?
+  summary    String
+  details    Json?
+  ip         String?  @db.VarChar(64)
+  createdAt  DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}
+
+model Report {
+  id               Int          @id @default(autoincrement())
+  kind             ReportKind
+  reason           String
+  details          String?      @db.Text
+  reporterId       Int?
+  reporter         User?        @relation("ReportsFiled", fields: [reporterId], references: [id], onDelete: SetNull)
+  reporterName     String?
+  reporterEmail    String?
+  postId           Int?
+  post             Post?        @relation(fields: [postId], references: [id], onDelete: SetNull)
+  reportedUserId   Int?
+  reportedUser     User?        @relation("ReportsAgainst", fields: [reportedUserId], references: [id], onDelete: SetNull)
+  reportedUserText String?
+  status           ReportStatus @default(open)
+  resolution       String?      @db.Text
+  resolvedAt       DateTime?
+  resolvedById     Int?
+  createdAt        DateTime     @default(now())
+  documents        Document[]
+
+  @@index([status])
+}
+
+enum ReportKind {
+  user
+  post
+}
+
+enum ReportStatus {
+  open
+  resolved
+  dismissed
+}
+
+// Key/value platform settings edited from the dashboard (see lib/settings.js)
+model Setting {
+  key         String   @id @db.VarChar(60)
+  value       Json
+  updatedById Int?
+  updatedAt   DateTime @default(now()) @updatedAt
+}
+
+model PasswordResetToken {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique @db.VarChar(64)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
 }

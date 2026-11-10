@@ -1,24 +1,54 @@
 import { useState, useEffect } from "react";
 import "./filter.scss";
 import { useSearchParams } from "react-router-dom";
+import { SlidersHorizontal, X } from "lucide-react";
+
+const propertyTypes = {
+  residential: [
+    ["apartment", "Apartment"],
+    ["individual_house", "Individual house"],
+    ["traditional_house", "Traditional house"],
+    ["other_residential", "Other"],
+  ],
+  commercial: [
+    ["office", "Office"],
+    ["retail", "Retail"],
+    ["hospitality", "Hospitality / Leisure"],
+    ["industrial", "Industrial"],
+  ],
+};
+
+const keys = [
+  "city",
+  "district",
+  "type",
+  "property",
+  "propertyType",
+  "minPrice",
+  "maxPrice",
+  "bedroom",
+  // results order, read by ListPage
+  "sort",
+];
+// Fields that live only in the "Filters" modal
+const modalKeys = ["district", "property", "propertyType", "minPrice", "maxPrice", "bedroom"];
+
+const fromParams = (params) =>
+  Object.fromEntries(keys.map((k) => [k, params.get(k) || ""]));
+
+const clean = (q) => Object.fromEntries(Object.entries(q).filter(([, v]) => v));
 
 function Filter() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [cities, setCities] = useState([]); // Store cities from JSON file
-  const [districts, setDistricts] = useState([]); // Store districts of selected city
+  const [cities, setCities] = useState([]);
+  const [query, setQuery] = useState(() => fromParams(searchParams));
+  const [open, setOpen] = useState(false);
 
-  const [query, setQuery] = useState({
-    city: searchParams.get("city") || "",
-    district: searchParams.get("district") || "",
-    type: searchParams.get("type") || "",
-    property: searchParams.get("property") || "",
-    propertyType: searchParams.get("propertyType") || "",
-    minPrice: searchParams.get("minPrice") || "",
-    maxPrice: searchParams.get("maxPrice") || "",
-    bedroom: searchParams.get("bedroom") || "",
-  });
+  // Keep the form in sync when the URL changes (e.g. back/forward)
+  useEffect(() => {
+    setQuery(fromParams(searchParams));
+  }, [searchParams]);
 
-  // Fetch city data from JSON file
   useEffect(() => {
     fetch("/wilaya.json")
       .then((res) => res.json())
@@ -26,186 +56,275 @@ function Filter() {
       .catch((err) => console.error("Error loading cities:", err));
   }, []);
 
-  // Update districts when city changes
   useEffect(() => {
-    const selectedCity = cities.find((c) => c.name === query.city);
-    setDistricts(selectedCity ? selectedCity.dairats : []);
-    setQuery((prev) => ({ ...prev, district: "" })); // Reset district when city changes
-  }, [query.city, cities]);
+    if (!open) return;
+    const onKey = (e) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [open]);
 
-  const handleChange = (e) => {
-    setQuery({
-      ...query,
-      [e.target.name]: e.target.value,
-    });
+  const districts = cities.find((c) => c.name === query.city)?.dairats || [];
+
+  const update = (name, value) => (prev) => ({
+    ...prev,
+    [name]: value,
+    ...(name === "city" ? { district: "" } : {}),
+    ...(name === "property" ? { propertyType: "" } : {}),
+  });
+
+  const handleChange = (e) => setQuery(update(e.target.name, e.target.value));
+
+  // Pills in the bar apply immediately
+  const applyNow = (name, value) => {
+    const next = update(name, value)(query);
+    setQuery(next);
+    setSearchParams(clean(next));
   };
 
-  const handleFilter = () => {
-    const filteredQuery = Object.fromEntries(
-      Object.entries(query).filter(([_, value]) => value) // Remove empty fields
-    );
-
-    setSearchParams(filteredQuery);
+  const applyModal = (e) => {
+    e.preventDefault();
+    setSearchParams(clean(query));
+    setOpen(false);
   };
+
+  const modalCount = modalKeys.filter((k) => searchParams.get(k)).length;
+  const anyActive = keys.some((k) => searchParams.get(k));
+  const place = [searchParams.get("district"), searchParams.get("city")]
+    .filter(Boolean)
+    .join(", ");
+  const kind =
+    { residential: "Homes", commercial: "Commercial property" }[searchParams.get("property")] || "Properties";
+  const mode = { buy: " for sale", rent: " for rent" }[searchParams.get("type")] || "";
 
   return (
     <div className="filter">
-      <h1>
-        Search results for <b>{searchParams.get("city")}</b>
+      <h1 className="filterTitle">
+        {kind}
+        {mode} {place ? `in ${place}` : "across Algeria"}
       </h1>
-      <div className="top">
-        <div className="item">
-          <label htmlFor="city">City</label>
+
+      <div className="pillRow">
+        <div className="segmented" role="group" aria-label="Listing type">
+          {[
+            ["", "All"],
+            ["buy", "Buy"],
+            ["rent", "Rent"],
+          ].map(([value, label]) => (
+            <button
+              key={label}
+              type="button"
+              className={query.type === value ? "active" : ""}
+              aria-pressed={query.type === value}
+              onClick={() => applyNow("type", value)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        <label className={`pill selectPill ${query.city ? "on" : ""}`}>
+          <span className="sr-only">City</span>
           <select
-            id="city"
             name="city"
-            onChange={handleChange}
             value={query.city}
+            onChange={(e) => applyNow("city", e.target.value)}
           >
-            <option value="">Select City</option>
+            <option value="">Any city</option>
             {cities.map((city) => (
               <option key={city.mattricule} value={city.name}>
                 {city.name}
               </option>
             ))}
-          </select>
-        </div>
-
-        <div className="item">
-          <label htmlFor="district">District</label>
-          <select
-            id="district"
-            name="district"
-            onChange={handleChange}
-            value={query.district}
-            disabled={!query.city} // Disable if no city is selected
-          >
-            <option value="">Select District</option>
-            {districts.map((district) => (
-              <option key={district.code} value={district.name}>
-                {district.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        {/* 
-        <div className="item">
-          <label htmlFor="address">Address</label>
-          <input
-            type="text"
-            id="address"
-            name="address"
-            placeholder="Enter address"
-            onChange={handleChange}
-            value={query.address}
-          />
-        </div>
-        */}
-      </div>
-
-      <div className="bottom">
-        <div className="item">
-          <label htmlFor="type">Type</label>
-          <select
-            name="type"
-            id="type"
-            onChange={handleChange}
-            value={query.type}
-          >
-            <option value="">Any</option>
-            <option value="buy">Buy</option>
-            <option value="rent">Rent</option>
-          </select>
-        </div>
-
-        <div className="item">
-          <label htmlFor="property">Property Category</label>
-          <select
-            name="property"
-            id="property"
-            onChange={(e) =>
-              setQuery((prev) => ({
-                ...prev,
-                property: e.target.value,
-                propertyType: "", // reset type
-              }))
-            }
-            value={query.property}
-          >
-            <option value="">Select Category</option>
-            <option value="residential">Residential</option>
-            <option value="commercial">Commercial</option>
-          </select>
-        </div>
-
-        <div className="item">
-          <label htmlFor="propertyType">Property Type</label>
-          <select
-            name="propertyType"
-            id="propertyType"
-            onChange={handleChange}
-            value={query.propertyType}
-            disabled={!query.property}
-          >
-            <option value="">Select Type</option>
-            {query.property === "residential" && (
-              <>
-                <option value="apartment">Apartment</option>
-                <option value="individual_house">Individual House</option>
-                <option value="traditional_house">Traditional House</option>
-                <option value="other_residential">Other</option>
-              </>
-            )}
-            {query.property === "commercial" && (
-              <>
-                <option value="office">Office</option>
-                <option value="retail">Retail</option>
-                <option value="hospitality">Hospitality/Leisure</option>
-                <option value="industrial">Industrial</option>
-              </>
+            {query.city && !cities.some((c) => c.name === query.city) && (
+              <option value={query.city}>{query.city}</option>
             )}
           </select>
-        </div>
-        <div className="item">
-          <label htmlFor="minPrice">Min Price</label>
-          <input
-            type="number"
-            id="minPrice"
-            name="minPrice"
-            placeholder="Any"
-            onChange={handleChange}
-            value={query.minPrice}
-          />
-        </div>
+        </label>
 
-        <div className="item">
-          <label htmlFor="maxPrice">Max Price</label>
-          <input
-            type="number"
-            id="maxPrice"
-            name="maxPrice"
-            placeholder="Any"
-            onChange={handleChange}
-            value={query.maxPrice}
-          />
-        </div>
-
-        <div className="item">
-          <label htmlFor="bedroom">Bedroom</label>
-          <input
-            type="number"
-            id="bedroom"
-            name="bedroom"
-            placeholder="Any"
-            onChange={handleChange}
-            value={query.bedroom}
-          />
-        </div>
-
-        <button onClick={handleFilter}>
-          <img src="/search.png" alt="Search" />
+        <button
+          type="button"
+          className={`pill ${modalCount ? "on" : ""}`}
+          onClick={() => setOpen(true)}
+        >
+          <SlidersHorizontal size={15} /> Filters
+          {modalCount > 0 && <span className="count">{modalCount}</span>}
         </button>
+
+        {anyActive && (
+          <button type="button" className="clearLink" onClick={() => setSearchParams({})}>
+            Clear all
+          </button>
+        )}
       </div>
+
+      {open && (
+        <div className="filterOverlay" onClick={() => setOpen(false)}>
+          <form
+            className="filterModal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="filters-title"
+            onClick={(e) => e.stopPropagation()}
+            onSubmit={applyModal}
+          >
+            <header>
+              <button
+                type="button"
+                className="iconBtn"
+                onClick={() => setOpen(false)}
+                aria-label="Close"
+              >
+                <X size={18} />
+              </button>
+              <h2 id="filters-title">Filters</h2>
+            </header>
+
+            <div className="modalBody">
+              <section>
+                <h3>Location</h3>
+                <div className="two">
+                  <div className="field">
+                    <label htmlFor="f-city">City</label>
+                    <select id="f-city" name="city" value={query.city} onChange={handleChange}>
+                      <option value="">Any city</option>
+                      {cities.map((city) => (
+                        <option key={city.mattricule} value={city.name}>
+                          {city.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="field">
+                    <label htmlFor="f-district">District</label>
+                    <select
+                      id="f-district"
+                      name="district"
+                      value={query.district}
+                      onChange={handleChange}
+                      disabled={!query.city}
+                    >
+                      <option value="">Any district</option>
+                      {districts.map((d) => (
+                        <option key={d.code} value={d.name}>
+                          {d.name}
+                        </option>
+                      ))}
+                      {query.district &&
+                        !districts.some((d) => d.name === query.district) && (
+                          <option value={query.district}>{query.district}</option>
+                        )}
+                    </select>
+                  </div>
+                </div>
+              </section>
+
+              <section>
+                <h3>Price range</h3>
+                <div className="two">
+                  <div className="field">
+                    <label htmlFor="f-min">Minimum (DZD)</label>
+                    <input
+                      id="f-min"
+                      type="number"
+                      name="minPrice"
+                      min={0}
+                      placeholder="No min"
+                      value={query.minPrice}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="field">
+                    <label htmlFor="f-max">Maximum (DZD)</label>
+                    <input
+                      id="f-max"
+                      type="number"
+                      name="maxPrice"
+                      min={0}
+                      placeholder="No max"
+                      value={query.maxPrice}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+              </section>
+
+              <section>
+                <h3>Property type</h3>
+                <div className="chips">
+                  {[
+                    ["", "Any"],
+                    ["residential", "Residential"],
+                    ["commercial", "Commercial"],
+                  ].map(([value, label]) => (
+                    <button
+                      key={label}
+                      type="button"
+                      className={query.property === value ? "active" : ""}
+                      onClick={() => setQuery(update("property", value))}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                {query.property && (
+                  <div className="chips">
+                    {propertyTypes[query.property].map(([value, label]) => (
+                      <button
+                        key={value}
+                        type="button"
+                        className={query.propertyType === value ? "active" : ""}
+                        onClick={() =>
+                          setQuery(
+                            update(
+                              "propertyType",
+                              query.propertyType === value ? "" : value
+                            )
+                          )
+                        }
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </section>
+
+              <section>
+                <h3>Bedrooms</h3>
+                <div className="chips">
+                  {["", "1", "2", "3", "4", "5"].map((n) => (
+                    <button
+                      key={n || "any"}
+                      type="button"
+                      className={query.bedroom === n ? "active" : ""}
+                      onClick={() => setQuery(update("bedroom", n))}
+                    >
+                      {n ? `${n}+` : "Any"}
+                    </button>
+                  ))}
+                </div>
+              </section>
+            </div>
+
+            <footer>
+              <button
+                type="button"
+                className="clearLink"
+                onClick={() => setQuery(fromParams(new URLSearchParams()))}
+              >
+                Clear all
+              </button>
+              <button type="submit" className="btn applyBtn">
+                Show results
+              </button>
+            </footer>
+          </form>
+        </div>
+      )}
     </div>
   );
 }

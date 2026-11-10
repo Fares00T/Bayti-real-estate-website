@@ -1,0 +1,164 @@
+@use "../../responsive.scss" as *;
+
+// Shared form styles also used by the agency application page
+.reportPage,
+.agencyFormPage {
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+
+  .reportForm {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .fieldRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+
+    @include xs {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .field select {
+    appearance: auto;
+  }
+
+  .typeChoice {
+    border: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+
+    legend {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 18px 16px;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.15s, box-shadow 0.15s;
+
+      &:hover {
+        border-color: var(--text);
+      }
+      &.active {
+        border-color: var(--text);
+        box-shadow: 0 0 0 1px var(--text);
+        background: var(--surface-2);
+      }
+
+      input {
+        accent-color: var(--text);
+      }
+    }
+  }
+
+  .fileLabel {
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .docs {
+    border: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    legend {
+      margin-bottom: 8px;
+    }
+  }
+
+  .fileDrop {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 56px;
+    padding: 0 16px;
+    border: 1px dashed #b0b0b0;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 15px;
+    color: var(--muted);
+
+    &:hover {
+      border-color: var(--text);
+    }
+    &.has-file {
+      color: var(--text);
+    }
+
+    input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+    }
+
+    span:first-of-type {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .btn-link {
+      flex-shrink: 0;
+      font-size: 14px;
+    }
+
+    &:focus-within {
+      border-color: var(--text);
+      box-shadow: 0 0 0 1px var(--text);
+    }
+  }
+
+  .error-text {
+    font-size: 14px;
+  }
+
+  .submit {
+    align-self: flex-start;
+    min-width: 200px;
+
+    @include xs {
+      align-self: stretch;
+    }
+  }
+
+  .reportDone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+    padding: 64px 24px;
+
+    svg {
+      color: var(--success);
+    }
+    h1 {
+      font-size: 26px;
+      font-weight: 700;
+    }
+    p {
+      color: var(--muted);
+      max-width: 440px;
+      margin-bottom: 12px;
+    }
+  }
+}
