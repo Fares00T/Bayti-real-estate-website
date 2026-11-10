@@ -1,7 +1,15 @@
 // Browser side of the demo: every request the apps make to /api/* is answered
 // by the in-browser API, and photo uploads that would go to Cloudinary are
 // resized locally and kept as data URLs.
-import { dispatch } from "./http.js";
+import { dispatch as run } from "./http.js";
+import { localizeData, delocalizeRequest } from "../../i18n/index.js";
+
+// The demo data is stored in English and shown in the visitor's language
+const dispatch = async (request) => {
+  const res = await run({ ...request, ...delocalizeRequest(request) });
+  if (res.isJson) res.data = localizeData(res.data);
+  return res;
+};
 
 const latency = () => new Promise((r) => setTimeout(r, 120 + Math.random() * 180));
 

@@ -37,6 +37,10 @@ A **Live demo** panel (bottom-left) signs you in as any role in one click:
 The password for every account is `demo1234`. **Reset demo** in the panel
 restores the original data.
 
+The demo opens in **French**. The **FR | EN** switch on the panel changes the
+language for the three apps at once and is remembered in the browser. A link
+ending in `?lang=en` (or `?lang=fr`) opens the demo in that language.
+
 ## Deploying on Vercel
 
 1. Push the repository to GitHub and import it in Vercel.
@@ -68,7 +72,11 @@ demo/
       files.js                     private documents in IndexedDB
       demoBar.js                   the Live demo panel
     seed.js                        the demo data
-  scripts/                         build, local server, smoke test
+  i18n/                            French / English
+    index.js                       language choice, page translation, demo data translation
+    translator.js                  dictionary lookup
+    fr/                            the French: one dictionary per app, plus server messages and demo data
+  scripts/                         build, local server, smoke test, translation check
 ```
 
 Differences from production, all limited to `demo/`:
@@ -89,3 +97,31 @@ To refresh the demo after changing the real app, copy the changed files from
 `client/`, `agency/`, `admin/` or `api/` into the matching folder here (keeping
 the `Demo build` patches), and bump `DB_KEY` in `server/runtime/database.js`
 if the seed or schema changed.
+
+## French and English
+
+The apps stay in English, as in production. In French the demo translates at
+the edges, so the copied pages need no change:
+
+- Text, placeholders, tooltips and labels are translated as they reach the
+  page, from the dictionaries in `i18n/fr/` (`client-*.js`, `agency.js`,
+  `admin.js`, `server.js` for API messages and notifications, `common.js`).
+  A key is the English text of one piece of the page; `patterns` cover text
+  with a changing part ("12 listings found").
+- The demo data (titles, descriptions, messages, notes) is translated in the
+  API responses from `i18n/fr/seed.js`, and mapped back to English in what the
+  apps send, so saving a form leaves untouched fields as they were.
+- Dates follow the language. Text typed by the visitor is never translated.
+
+After copying changed pages or editing the seed, list what has no French yet
+and add it to the matching file in `i18n/fr/`:
+
+```bash
+node scripts/i18n-check.mjs          # text written in the pages
+node scripts/i18n-check.mjs --all    # also labels and messages defined in code
+node scripts/i18n-check.mjs --seed   # demo data
+```
+
+In the browser console, `__baytiI18n.misses` lists the text that stayed in
+English on the pages visited so far. Anything without a translation is shown
+in English.
