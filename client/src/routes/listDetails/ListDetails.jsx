@@ -8,6 +8,7 @@ import DOMPurify from "dompurify";
 import { AuthContext } from "../../context/AuthContext";
 import Chat from "../../components/chat/Chat.jsx";
 import TourRequestModal from "../../components/tourRequestModal/TourRequestModal.jsx";
+import { whatsappLink } from "../../components/lib/whatsapp.js";
 import {
   formatAddress,
   formatPrice,
@@ -116,6 +117,14 @@ export default function ListDetails() {
   const closed = ["sold", "rented"].includes(post.availability);
   const canContact = !isOwner && !closed;
   const canRequestTour = canContact;
+  // The agent's mobile, prefilled with the listing, for people who prefer WhatsApp
+  const whatsapp =
+    canContact &&
+    isAgencyListing &&
+    whatsappLink(
+      post.user?.phone,
+      `Hi, I'm interested in the property "${post.title}" in ${formatAddress(post)} on Bayti. Is it still available?`
+    );
 
   const nearbyPlaces = [
     { label: "Mosque", value: detail.mosque, icon: Landmark },
@@ -268,6 +277,11 @@ export default function ListDetails() {
                     {post.user.phone && (
                       <a href={`tel:${post.user.phone}`}>
                         <Phone size={13} /> {post.user.phone}
+                      </a>
+                    )}
+                    {whatsapp && (
+                      <a className="whatsapp" href={whatsapp} target="_blank" rel="noreferrer">
+                        <MessageCircle size={13} /> WhatsApp
                       </a>
                     )}
                   </div>
