@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { Analytics } from "@vercel/analytics/react";
 import { ThemeProvider } from "@mui/material/styles";
 import App from "./App.jsx";
 import "./index.scss";
@@ -13,5 +14,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <App />
       </AuthContextProvider>
     </ThemeProvider>
+    <Analytics />
   </React.StrictMode>
 );

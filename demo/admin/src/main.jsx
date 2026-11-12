@@ -5,6 +5,7 @@ import { startI18n } from "../../i18n/index.js";
 import adminFr from "../../i18n/fr/admin.js";
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { Analytics } from "@vercel/analytics/react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { themeOptions } from "../../shared/theme.js";
 import { AuthProvider } from "./lib/auth";
@@ -25,6 +26,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <App />
       </AuthProvider>
     </ThemeProvider>
+    <Analytics />
   </React.StrictMode>
 );
 
