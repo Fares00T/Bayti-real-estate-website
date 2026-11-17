@@ -19,6 +19,10 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 dotenv.config();
 const app = express();
+// In production Nginx sits in front of the API on the same machine. Trusting
+// only the loopback proxy makes req.ip the visitor's address (used by the
+// login throttle and report logs) without letting clients spoof it.
+app.set("trust proxy", "loopback");
 app.use(express.json());
 app.use(cookieParser());
 

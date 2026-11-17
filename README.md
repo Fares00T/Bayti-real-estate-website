@@ -132,6 +132,10 @@ Sign in with an account that belongs to an approved agency. Set `AGENCY_URL` and
 
 ## 🚀 Production
 
+**On a VPS (one Ubuntu server for everything):** follow [deploy/DEPLOY.md](deploy/DEPLOY.md). Its scripts set up Nginx, MySQL, Node and HTTPS, and do the steps below for you.
+
+**On other hosts**, the general rules:
+
 1. Deploy the API at `api.baytiy.com` with `NODE_ENV=production`, `CLIENT_URL=https://baytiy.com`, `AGENCY_URL=https://agency.baytiy.com` and `ADMIN_URL=https://admin.baytiy.com`.
 2. Build each front end separately and host it on its own domain:
    - `client/`: set `VITE_BACK_END_URL=https://api.baytiy.com/api`, run `npm run build`, serve `client/dist` at `baytiy.com`.

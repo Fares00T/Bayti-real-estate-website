@@ -99,7 +99,7 @@ export default function ReportPage() {
               type="text"
               required
               defaultValue={searchParams.get("post") || ""}
-              placeholder="e.g. 12 or http://localhost:5173/12"
+              placeholder={`e.g. 12 or ${window.location.origin}/12`}
             />
           </div>
         ) : (
