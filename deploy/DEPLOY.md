@@ -62,6 +62,8 @@ When it answers with your server IP, that name is ready. You can continue with s
 
 ## Step 3 — Connect to the server
 
+You always connect with **SSH** (the `ssh` command). The password and the key are just two ways of proving it's you: the **first time you must use the password** from Octenium's email; then, once, you can set up a key so you never type the password again. The PDF guide (`deploy/Bayti-VPS-Deployment-Guide.pdf`) walks through this screen by screen.
+
 Open **PowerShell** on your PC:
 
 ```powershell
